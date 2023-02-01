@@ -70,7 +70,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -2991,8 +2991,8 @@ TextureImporter:
       tilemap_packed 1_115: -783505340
       tilemap_packed 1_71: 1517918434
       tilemap_packed 1_40: -1496367343
-      tilemap_packed 1_34: 1996002771
       tilemap_packed 1_104: 656979245
+      tilemap_packed 1_34: 1996002771
       tilemap_packed 1_118: 784977468
       tilemap_packed 1_124: -1976859794
       tilemap_packed 1_51: -404895674
