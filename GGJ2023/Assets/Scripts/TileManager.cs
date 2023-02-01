@@ -5,11 +5,11 @@ using UnityEngine.Tilemaps;
 
 public enum TileType
 {
-    Floor,
-    Wall,
-    Interactable,
+    Ground,
+    Grass,
+    Prop,
     Other
-}
+};
 
 public enum TileDirectionType
 {
@@ -24,14 +24,17 @@ public enum TileDirectionType
     TopRight
 };
 
+
+
 public class TileInfo
 {
     public TileType tileType;
     public Vector2Int positionInArray;
     public Vector2Int cellPosition; // cellPosition != tileInfo position because of centering offset
     public TileDirectionType directionType;
-    public bool shouldHaveCollision = false;
     public int corners = 0x0000; // top, right, bottom, left
+
+    public TiledGameObject tiledGameObject = null;
 };
 
 public class TileManager : MonoBehaviour
@@ -43,14 +46,23 @@ public class TileManager : MonoBehaviour
     private List<TileBase> floorTiles;
 
     [SerializeField]
-    private TileBase wallTile;
+    private TileBase grassTile;
+
+    [SerializeField]
+    private List<TileBase> alternativeGrassTiles;
+
+    [SerializeField]
+    private float alternativeGrassTileChance = 0.25f;
 
     private TileInfo[,] tileInfos;
 
-    private HashSet<TileInfo> cachedEmptyTiles = new HashSet<TileInfo>();
-
     private int width;
     private int height;
+
+    private HashSet<TileInfo> cachedEmptyTiles = new HashSet<TileInfo>();
+
+    [SerializeField]
+    private TiledGameObject TestPrefab;
 
     void Update()
     {
@@ -77,25 +89,21 @@ public class TileManager : MonoBehaviour
                 tileInfos[i, j] =  new TileInfo();
                 TileInfo info = tileInfos[i,j];
                 info.positionInArray = new Vector2Int(i, j);
-                int xPos = i - halfWidth;
-                int yPos = j - halfHeight;
-                info.cellPosition = new Vector2Int(xPos, yPos);
-                info.tileType = map[i, j] == MapTileType.EMPTY ? TileType.Floor : TileType.Wall;
+                info.cellPosition = ArrayToCellPosition(info.positionInArray);;
+                info.tileType = map[i, j] == MapTileType.EMPTY ? TileType.Ground : TileType.Grass;
 
-                if (IsEmptyTile(info.tileType))
-                {
-                    cachedEmptyTiles.Add(info);
-                }
-
-                if (IsCollidingTile(info.tileType))
-                {
-                    info.shouldHaveCollision = true;
-                }
+                //if (IsCollidingTile(info.tileType))
+                //{
+                //    info.shouldHaveCollision = true;
+                //}
+                // Assume all initial tiles don't have collision
+                info.tiledGameObject = null;
+                cachedEmptyTiles.Add(info);
             }
         }
 
         // Figure out the corners for the tile sprite
-        HashSet<Vector2Int> floor = GetCellPositionsOfType(TileType.Floor);
+        HashSet<Vector2Int> floor = GetCellPositionsOfType(TileType.Ground);
         foreach (Vector2Int groundLocation in floor)
         {
             Vector2Int arrayPosition = CellToArrayPosition(groundLocation);
@@ -134,11 +142,20 @@ public class TileManager : MonoBehaviour
             {
                 TileInfo info = tileInfos[i, j];
                 TileBase tile = null;
-                if (!IsEmptyTile(info.tileType))
+                if (info.tileType == TileType.Grass)
                 {
-                    tile = wallTile;
+                    float chance = Random.Range(0.0f, 1.0f);
+                    if (chance < alternativeGrassTileChance)
+                    {
+                        int index = Random.Range(0, alternativeGrassTiles.Count);
+                        tile = alternativeGrassTiles[index];
+                    }
+                    else
+                    {
+                        tile = grassTile;
+                    }
                 }
-                else
+                else if (info.tileType == TileType.Ground)
                 {
                     int tileCorner = GetTileIndexFromCorner(info.corners);
                     tile = floorTiles[tileCorner];
@@ -146,6 +163,9 @@ public class TileManager : MonoBehaviour
                 PaintSingleTile(tilemap, tile, info.cellPosition);
             }
         }
+
+        Vector3 instantiatePosition = GetWorldPositionOfTileInArray(new Vector2Int(width/2, height/2));
+        TiledGameObject newObject = Instantiate(TestPrefab, instantiatePosition, Quaternion.identity);
     }
 
     private void PaintSingleTile(Tilemap tilemap, TileBase tile, Vector2Int position)
@@ -154,16 +174,8 @@ public class TileManager : MonoBehaviour
         tilemap.SetTile(tilePosition, tile);
     }
 
-    private bool IsEmptyTile(TileType tileType)
-    {
-        return tileType == TileType.Floor;
-    }
 
-    private bool IsCollidingTile(TileType tileType)
-    {
-        return tileType == TileType.Wall;
-    }
-
+/*
     // Note: Does not recalculate direction. Unsupported for now due to complexity
     void SetTile(int positionInArrayX, int positionInArrayY, TileType tileType)
     {
@@ -175,11 +187,12 @@ public class TileManager : MonoBehaviour
 
         tile.tileType = tileType;
 
-        if (IsEmptyTile(tileType))
+        if (IsGroundTile(tileType))
         {
             cachedEmptyTiles.Add(tile);
         }
     }
+    */
 
     public TileInfo GetTileInWorld(Vector3 worldPosition)
     {
@@ -193,6 +206,24 @@ public class TileManager : MonoBehaviour
         int halfWidth = width / 2;
         int halfHeight = height / 2;
         return new Vector2Int(cellPosition.x +  halfWidth, cellPosition.y + halfHeight);
+    }
+
+    Vector2Int ArrayToCellPosition(Vector2Int arrayPosition)
+    {
+        int halfWidth = width / 2;
+        int halfHeight = height / 2;
+        return new Vector2Int(arrayPosition.x - halfWidth, arrayPosition.y - halfHeight);
+    }
+
+    public Vector3 GetWorldPositionOfTileInArray(Vector2Int arrayPosition)
+    {
+        Vector2Int cellPosition = ArrayToCellPosition(arrayPosition);
+        return GetWorldPositionOfTileCell(cellPosition);
+    }
+
+    public Vector3 GetWorldPositionOfTileCell(Vector2Int cellPosition)
+    {
+        return tilemap.CellToWorld(new Vector3Int(cellPosition.x, cellPosition.y, 0));
     }
 
     private HashSet<Vector2Int> GetCellPositionsOfType(TileType tileType)

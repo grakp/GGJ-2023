@@ -14,7 +14,11 @@ public class TileDebugger : MonoBehaviour
     void Update()
     {
         TileInfo tile = GameManager.Instance.tileManager.GetTileInWorld(transform.position);
-        int corner = GameManager.Instance.tileManager.GetTileIndexFromCorner(tile.corners);
-        Debug.Log(tile.tileType + " " + corner);
+        if (tile != null)
+        {
+            int corner = GameManager.Instance.tileManager.GetTileIndexFromCorner(tile.corners);
+            Debug.Log(tile.tileType + " " + corner);
+        }
+
     }
 }

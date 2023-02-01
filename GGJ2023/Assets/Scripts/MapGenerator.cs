@@ -12,6 +12,14 @@ public enum MapTileType {
     OUT_OF_BOUNDS = 3
 };
 
+
+[System.Serializable]
+public class ObjectSpawnParams
+{
+    public int width = 1;
+    public int height = 1;
+};
+
 public class MapGenerator : MonoBehaviour {
 
     public int width;
@@ -34,6 +42,9 @@ public class MapGenerator : MonoBehaviour {
     public int passagewaySize = 5;
     public int wallThresholdSize = 50;
     public int roomThresholdSize = 50;
+
+    [Header("Objects")]
+    public List<ObjectSpawnParams> spawnableObjects;
 
     public delegate void OnGenerateCallback(MapTileType[,] map);
 
