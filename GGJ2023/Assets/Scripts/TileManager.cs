@@ -66,7 +66,7 @@ public class TileManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             GameManager.Instance.GenerateMap();
         }
