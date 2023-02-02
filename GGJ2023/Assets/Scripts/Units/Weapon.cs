@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public float attack;
+    public int attackStat;
+    public int magicStat;
     public Sprite sprite;
 }

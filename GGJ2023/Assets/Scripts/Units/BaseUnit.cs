@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class BaseUnit : MonoBehaviour
 {
-    public float health;
+    public enum UnitType {
+        PLAYER,
+        ENEMY_BASIC,
+        ENEMY_BOSS
+    }
+
+    public int health;
+    public UnitType unitType;
     public Vector2 dir = new Vector2(0, 1); 
     public Weapon weapon;
     public Ability[] abilities;
@@ -30,6 +37,11 @@ public class BaseUnit : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void TakeDamage(int damage) {
+        // TODO: Trigger damage anims?
+        health = Mathf.Max(health - damage, 0);
     }
 
     void Start() {
