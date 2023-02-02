@@ -88,9 +88,10 @@ GameObject:
   - component: {fileID: 1925506408361040548}
   - component: {fileID: 2887272285886651208}
   - component: {fileID: 6330485661684795066}
+  - component: {fileID: 7600776276201325487}
   m_Layer: 0
   m_Name: Water
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -149,6 +150,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7600776276201325487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925506408361040551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e64028b024d20b41bf370dcd223939f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resourceType: 1
+  amountToGive: 1
+  totalAmount: 1
+  hasLimit: 1
 --- !u!1 &1925506408467870625
 GameObject:
   m_ObjectHideFlags: 0
