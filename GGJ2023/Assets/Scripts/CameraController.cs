@@ -37,7 +37,7 @@ public class CameraController : MonoBehaviour
         {
           velocity.x = 10f;
         }
-        else if (Input.mousePosition.y < edgeScrollSize) // Bottom edge
+        if (Input.mousePosition.y < edgeScrollSize) // Bottom edge
         {
           velocity.y = -10f;
         }

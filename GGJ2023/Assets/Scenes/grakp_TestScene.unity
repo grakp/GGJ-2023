@@ -2362,8 +2362,6 @@ GameObject:
   - component: {fileID: 965651765}
   - component: {fileID: 965651764}
   - component: {fileID: 965651763}
-  - component: {fileID: 965651767}
-  - component: {fileID: 965651766}
   - component: {fileID: 965651768}
   m_Layer: 0
   m_Name: Main Camera
@@ -2438,34 +2436,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &965651766
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 965651762}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7a4c51190aa24b9ba96c5a309dcd789, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 748882281}
-  smoothing: 5
-  smoothingSpeed: 4
---- !u!114 &965651767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 965651762}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 575b6675d4e1942bbaad21d092937037, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 748882281}
 --- !u!114 &965651768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2478,8 +2448,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f29b0ea376b92475580f05aa00173c74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  edgeScrollSize: 30
   target: {fileID: 748882281}
+  edgeScrollSize: 30
+  smoothTime: 0.25
 --- !u!1 &2071458861
 GameObject:
   m_ObjectHideFlags: 0
