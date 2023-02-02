@@ -131,6 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instigator: {fileID: 0}
   target: {fileID: 0}
+  durationSec: 0.5
 --- !u!1 &720084876788243351
 GameObject:
   m_ObjectHideFlags: 0
