@@ -7,14 +7,17 @@ public class GameManager : Singleton<GameManager>
     public TileManager tileManager;
     public MapGenerator mapGenerator;
 
+    // Per-map game controller instance
+    public GameController gameController{get; set;}
+
     void Awake()
     {
-        GenerateMap();
     }
 
     void Start()
     {
-
+        // Do generate map in Start because need reference to controller
+        GenerateMap();
     }
 
     public void GenerateMap()

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Linq;
 
 public enum TileType
 {
@@ -35,6 +36,21 @@ public class TileInfo
     public int corners = 0x0000; // top, right, bottom, left
 
     public TiledGameObject tiledGameObject = null;
+
+    // Special tiles are tiles that should be left empty.
+    public bool specialTile = false;
+
+    public bool IsEmptyTile()
+    {
+        return tiledGameObject == null && !specialTile;
+    }
+};
+
+[System.Serializable]
+public class TileSpawnParams
+{
+    public TiledGameObject tiledObjectPrefab;
+    public int numObjects = 10;
 };
 
 public class TileManager : MonoBehaviour
@@ -64,6 +80,30 @@ public class TileManager : MonoBehaviour
     [SerializeField]
     private TiledGameObject TestPrefab;
 
+    [SerializeField]
+    private List<TileSpawnParams> spawnParams;
+
+    [SerializeField]
+    private int emptyDistanceFromCenter = 5;
+
+    [Header("Water")]
+
+    [SerializeField]
+    private TiledGameObject waterTilePrefab;
+
+    [SerializeField]
+    private int numRivers = 10;
+
+    [SerializeField]
+    private int waterWalkIterations = 2;
+
+    [SerializeField]
+    private int waterWalkLength = 4;
+
+    [SerializeField]
+    private bool waterWalkStartRandomlyEachIteration = true;
+
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -81,6 +121,8 @@ public class TileManager : MonoBehaviour
 
         int halfWidth = width / 2;
         int halfHeight = height / 2;
+
+        Vector2Int middle = new Vector2Int(halfWidth, halfHeight);
         
         for (int i = 0; i < width; i++)
         {
@@ -91,6 +133,13 @@ public class TileManager : MonoBehaviour
                 info.positionInArray = new Vector2Int(i, j);
                 info.cellPosition = ArrayToCellPosition(info.positionInArray);;
                 info.tileType = map[i, j] == MapTileType.EMPTY ? TileType.Ground : TileType.Grass;
+
+                int distance = TileDistance(info.positionInArray, middle);
+                if (distance < emptyDistanceFromCenter)
+                {
+                    info.specialTile = true;
+                }
+
 
                 //if (IsCollidingTile(info.tileType))
                 //{
@@ -164,14 +213,194 @@ public class TileManager : MonoBehaviour
             }
         }
 
-        Vector3 instantiatePosition = GetWorldPositionOfTileInArray(new Vector2Int(width/2, height/2));
-        TiledGameObject newObject = Instantiate(TestPrefab, instantiatePosition, Quaternion.identity);
+        // Vector3 instantiatePosition = GetWorldPositionOfTileInArray(new Vector2Int(width/2, height/2));
+        // TiledGameObject newObject = Instantiate(TestPrefab, instantiatePosition, Quaternion.identity);
+        // Water will be spawned like an object, but it has a special algorthm, so do it first
+        {
+
+
+
+            for (int i = 0; i < numRivers; i++)
+            {
+                if (i >= cachedEmptyTiles.Count)
+                {
+                    break;
+                }
+
+                List<TileInfo> emptyTileList = cachedEmptyTiles.ToList();
+                emptyTileList.Shuffle();
+                TileInfo tile = emptyTileList[i];
+                if (tile == null)
+                {
+                    Debug.Log("AAAAAAAA");
+                }
+
+                HashSet<Vector2Int> riverTiles = RunRandomWalk(tile.positionInArray, waterWalkIterations, waterWalkLength, waterWalkStartRandomlyEachIteration);
+                foreach (Vector2Int riverTile in riverTiles)
+                {
+                    Vector3 instantiatePosition = GetWorldPositionOfTileInArray(riverTile);
+                    TiledGameObject newObject = Instantiate(waterTilePrefab, instantiatePosition, Quaternion.identity);
+                    newObject.transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
+                    tile = tileInfos[riverTile.x, riverTile.y];
+                    SetTileInUse(newObject, tile);
+                }
+            }
+        }
+        
+        foreach (TileSpawnParams param in spawnParams)
+        {
+            for (int i = 0; i < param.numObjects; i++)
+            {
+                List<TileInfo> emptyTileList = cachedEmptyTiles.ToList();
+                emptyTileList.Shuffle();
+
+                int foundTileIndex = -1;
+                for (int j = emptyTileList.Count - 1; j >= 0; j--)
+                {
+                    TileInfo tile = emptyTileList[j];
+                    if (CanPlaceObjectOnTile(param.tiledObjectPrefab, tile))
+                    {
+                        foundTileIndex = j;
+                        break;
+                    }
+                    else
+                    {
+                        emptyTileList.RemoveAt(j);
+                    }
+                }
+
+                if (foundTileIndex != -1)
+                {
+                    TileInfo tile = emptyTileList[foundTileIndex];
+                    Vector3 instantiatePosition = GetWorldPositionOfTileInArray(tile.positionInArray);
+                    TiledGameObject newObject = Instantiate(param.tiledObjectPrefab, instantiatePosition, Quaternion.identity);
+                    newObject.transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
+                    SetTileInUse(newObject, tile);
+                }
+                else
+                {
+                    Debug.LogError("Unable to place: " + param.tiledObjectPrefab.name);
+                }
+            }
+
+
+        }
+
+        //cachedEmptyTiles = new HashSet<TileInfo>(emptyTileList);
+    }
+
+    public void SetTileInUse(TiledGameObject obj, TileInfo tile)
+    {
+        Vector2Int tileBounds = GetTiledGameObjectBounds(obj);
+        Vector2Int originInArray = tile.positionInArray;
+        for (int i = originInArray.x; i < originInArray.x + tileBounds.x; i++)
+        {
+            for (int j = originInArray.y; j < originInArray.y + tileBounds.y; j++)
+            {
+                TileInfo tileInfo = GetTileInfoInArraySafe(i, j);
+                if (tileInfo == null)
+                {
+                    Debug.LogError("Should not be the case!");
+                    return;
+                }
+                if (!tileInfo.IsEmptyTile())
+                {
+                    Debug.LogError("Should not be the case!");
+                }
+                else
+                {
+                    tileInfo.tiledGameObject = obj;
+                }
+
+                cachedEmptyTiles.Remove(tileInfo);
+            }
+        }
+    }
+
+    public void RemoveTileInUse(TiledGameObject obj, TileInfo tile)
+    {
+        Vector2Int tileBounds = GetTiledGameObjectBounds(obj);
+        Vector2Int originInArray = tile.positionInArray;
+        for (int i = originInArray.x; i < originInArray.x + tileBounds.x; i++)
+        {
+            for (int j = originInArray.y; j < originInArray.y + tileBounds.y; j++)
+            {
+                TileInfo tileInfo = GetTileInfoInArraySafe(i, j);
+                if (tileInfo == null)
+                {
+                    Debug.LogError("Should not be the case!");
+                    return;
+                }
+                if (tileInfo.IsEmptyTile())
+                {
+                    Debug.LogError("Should not be the case!");
+                }
+                else
+                {
+                    tileInfo.tiledGameObject = null;
+                    tileInfo.specialTile = false;
+                }
+
+                cachedEmptyTiles.Add(tile);
+            }
+        }
     }
 
     private void PaintSingleTile(Tilemap tilemap, TileBase tile, Vector2Int position)
     {
         var tilePosition = tilemap.WorldToCell((Vector3Int)position);
         tilemap.SetTile(tilePosition, tile);
+    }
+
+    private bool CanPlaceObjectOnTile(TiledGameObject obj, TileInfo tile)
+    {
+        Vector2Int tileBounds = GetTiledGameObjectBounds(obj);
+        return CanPlaceObjectOnTile(tileBounds, tile.positionInArray);
+    }
+
+    private bool CanPlaceObjectOnTile(Vector2Int tileBounds, Vector2Int originInArray)
+    {
+        for (int i = originInArray.x; i < originInArray.x + tileBounds.x; i++)
+        {
+            for (int j = originInArray.y; j < originInArray.y + tileBounds.y; j++)
+            {
+                TileInfo tileInfo = GetTileInfoInArraySafe(i, j);
+                if (tileInfo == null)
+                {
+                    return false;
+                }
+
+                if (!tileInfo.IsEmptyTile())
+                {
+                    return false;
+                }
+
+                // TODO: Add other restrictions here, such as not being able to be in certain places in case it blocks stuff?
+            }
+        }
+
+        return true;
+    }
+
+    private Vector2Int GetTiledGameObjectBounds(TiledGameObject obj)
+    {
+        BoxCollider2D boxCollider = obj.GetComponent<BoxCollider2D>();
+        if (boxCollider == null)
+        {
+            return Vector2Int.zero;
+        }
+
+        return new Vector2Int((int)boxCollider.size.x, (int)boxCollider.size.y);
+    }
+
+    public TileInfo GetTileInfoInArraySafe(int x, int y)
+    {
+        if (x < 0 || x >= width || y < 0 || y >= height)
+        {
+            return null;
+        }
+
+        return tileInfos[x, y];
     }
 
 
@@ -244,6 +473,13 @@ public class TileManager : MonoBehaviour
         return positions;
     }
 
+    private int TileDistance(Vector2Int Start, Vector2Int End)
+    {
+        int x = End.x - Start.x;
+        int y = End.y - Start.y;
+        return (int)Mathf.Sqrt( x*x + y*y);
+    }
+
 
     public int GetTileIndexFromCorner(int corner)
     {
@@ -270,4 +506,72 @@ public class TileManager : MonoBehaviour
 
         return total;
     }
+
+
+    // Walk for water algorithm
+    private HashSet<Vector2Int> RunRandomWalk(Vector2Int position, int iterations, int walkLength, bool startRandomlyEachIteration)
+    {
+        var currentPosition = position;
+        HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
+        for (int i = 0; i < iterations; i++)
+        {
+            HashSet<Vector2Int> path = SimpleRandomWalk(currentPosition, walkLength);
+            if (path.Count == 0)
+            {
+                return floorPositions;
+            }
+
+            floorPositions.UnionWith(path);
+            if (startRandomlyEachIteration)
+                currentPosition = floorPositions.ElementAt(Random.Range(0, floorPositions.Count));
+        }
+        return floorPositions;
+    }
+
+    private HashSet<Vector2Int> SimpleRandomWalk(Vector2Int startPosition, int walkLength)
+    {
+        HashSet<Vector2Int> path = new HashSet<Vector2Int>();
+        TileInfo tile = GetTileInfoInArraySafe(startPosition.x, startPosition.y);
+        if (tile == null || !tile.IsEmptyTile())
+        {
+            return path;
+        }
+
+        path.Add(startPosition);
+        Vector2Int previousPosition = startPosition;
+
+        for (int i = 0; i < walkLength; i++)
+        {
+            List<Vector2Int> cardinalDirectionsList = Direction2D.cardinalDirectionsList;
+            cardinalDirectionsList.Shuffle();
+
+            bool bFoundTile = false;
+            Vector2Int newPosition = new Vector2Int();
+            for (int j = 0; j < cardinalDirectionsList.Count; j++)
+            {
+                newPosition = previousPosition + cardinalDirectionsList[j];
+                tile = GetTileInfoInArraySafe(newPosition.x, newPosition.y);
+                if (tile == null || !tile.IsEmptyTile())
+                {
+                    continue;
+                }
+                else
+                {
+                    bFoundTile = true;
+                    break;
+                }
+            }
+
+            if (!bFoundTile)
+            {
+                return path;
+            }
+           
+            
+            path.Add(newPosition);
+            previousPosition = newPosition;
+        }
+        return path;
+    }
+
 }
