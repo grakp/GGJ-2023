@@ -12,9 +12,14 @@ public class SwingEffect : Effect
     // Weapon the instigator is holding
     private Weapon _wep;
 
+    // List of already handled targets
+    private HashSet<int> _triggeredObjects;
+
     public override void Initialize(GameObject instigator, Vector3 direction) {
+        _triggeredObjects = new HashSet<int>();
         _instigator = instigator;
         _wep = instigator.GetComponentInChildren<Weapon>();
+
         transform.SetParent(instigator.transform);
         transform.rotation = Quaternion.FromToRotation(new Vector3(0, 1, 0), direction);
         GetComponentInChildren<SpriteRenderer>().sprite = GetWeaponFromGameObject(instigator).sprite;        
@@ -26,6 +31,7 @@ public class SwingEffect : Effect
     }
 
     void Start() {
+        // NOTE: Set Active can potentially be called after a trigger
         StartCoroutine(HandleFinishEffect());
     }
 
@@ -36,6 +42,11 @@ public class SwingEffect : Effect
 
     public override void TriggerEntered(Collider2D other) {
         GameObject possibleEnemy = other.gameObject;
+        if(_triggeredObjects.Contains(possibleEnemy.GetInstanceID())) {
+            return;
+        }
+        _triggeredObjects.Add(other.gameObject.GetInstanceID());
+
         BaseUnit instigatorUnit = _instigator.GetComponent<BaseUnit>();
         BaseUnit enemyUnit = possibleEnemy.GetComponent<BaseUnit>();
         if(enemyUnit != null && enemyUnit.unitType != instigatorUnit.unitType) {            
