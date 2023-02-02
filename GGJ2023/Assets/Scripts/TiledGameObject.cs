@@ -4,15 +4,28 @@ using UnityEngine;
 
 public class TiledGameObject : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    protected TileInfo originTile = null;
+
+    void OnDestroy()
     {
-        
+        if (originTile != null)
+        {
+            if (GameManager.Instance != null && GameManager.Instance.tileManager != null)
+            {
+                GameManager.Instance.tileManager.RemoveTileInUse(this, originTile);
+            }
+        }
+
+        originTile = null;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Initialize(TileInfo tileInfo)
     {
-        
+        originTile = tileInfo;
+    }
+
+    public virtual void Interact(PlayerController player)
+    {
     }
 }

@@ -242,6 +242,7 @@ public class TileManager : MonoBehaviour
                     TiledGameObject newObject = Instantiate(waterTilePrefab, instantiatePosition, Quaternion.identity);
                     newObject.transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
                     tile = tileInfos[riverTile.x, riverTile.y];
+                    newObject.Initialize(tile);
                     SetTileInUse(newObject, tile);
                 }
             }
@@ -249,6 +250,11 @@ public class TileManager : MonoBehaviour
         
         foreach (TileSpawnParams param in spawnParams)
         {
+            if (param.tiledObjectPrefab == null)
+            {
+                Debug.LogWarning("Prefab is null!");
+            }
+
             for (int i = 0; i < param.numObjects; i++)
             {
                 List<TileInfo> emptyTileList = cachedEmptyTiles.ToList();
@@ -275,6 +281,7 @@ public class TileManager : MonoBehaviour
                     Vector3 instantiatePosition = GetWorldPositionOfTileInArray(tile.positionInArray);
                     TiledGameObject newObject = Instantiate(param.tiledObjectPrefab, instantiatePosition, Quaternion.identity);
                     newObject.transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
+                    newObject.Initialize(tile);
                     SetTileInUse(newObject, tile);
                 }
                 else
@@ -384,6 +391,11 @@ public class TileManager : MonoBehaviour
 
     private Vector2Int GetTiledGameObjectBounds(TiledGameObject obj)
     {
+
+        if (obj == null)
+        {
+            Debug.Log("Null");
+        }
         BoxCollider2D boxCollider = obj.GetComponent<BoxCollider2D>();
         if (boxCollider == null)
         {
