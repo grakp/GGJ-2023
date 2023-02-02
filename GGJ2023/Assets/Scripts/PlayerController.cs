@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
         inputHorizontal = Input.GetAxisRaw("Horizontal");
         inputVertical = Input.GetAxisRaw("Vertical");
         inputBasicAttack = Input.GetButtonDown("Fire1") || inputBasicAttack;
+        HandleInteractableInput();
     }
 
     void FixedUpdate() 
@@ -41,7 +42,6 @@ public class PlayerController : MonoBehaviour
         handleMovementInput();
         handleCursorMovementInput();
         handleAttackInput();
-        HandleInteractableInput();
     }
 
     // Helpers //
