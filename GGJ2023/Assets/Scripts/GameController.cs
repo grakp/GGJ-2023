@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour
     public Transform spawnedObjectParent;
 
     public UIController uiController;
+    public PlayerController player;
     
     // Start is called before the first frame update
     void Awake()
