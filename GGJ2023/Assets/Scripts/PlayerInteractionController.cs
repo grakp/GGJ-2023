@@ -22,7 +22,6 @@ public class PlayerInteractionController : MonoBehaviour
 
         if (other.tag == "Interactable")
         {
-            Debug.Log("Added interactable: " + other.name);
             interactableGameObjects.Add(tiledGameObject);
         }
     }
@@ -37,7 +36,6 @@ public class PlayerInteractionController : MonoBehaviour
 
         if (interactableGameObjects.Contains(tiledGameObject))
         {
-            Debug.Log("Removed interactable: " + other.name);
             interactableGameObjects.Remove(tiledGameObject);
         }
     }

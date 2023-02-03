@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public Transform spawnedObjectParent;
+
+    public UIController uiController;
     
     // Start is called before the first frame update
     void Awake()

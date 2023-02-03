@@ -7,8 +7,7 @@ public enum ResourceType
 {
     Wood,
     Water,
-    Rock,
-    Leaf
+    Rock
 };
 
 public class ResourceTiledGameObject : TiledGameObject

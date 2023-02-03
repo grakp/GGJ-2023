@@ -16,10 +16,9 @@ public class PlayerController : MonoBehaviour
     float inputVertical;
     bool inputBasicAttack;
 
-    int amountWood = 0;
-    int amountWater = 0;
-    int amountRock = 0;
-    int amountLeaf = 0;
+    public int amountWood{get; set;}
+    public int amountWater{get; set;}
+    public int amountRock{get; set;}
 
     // Start is called before the first frame update
     void Start()
@@ -73,7 +72,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleInteractableInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Space))
         {
             TiledGameObject interactObject = interactionController.GetInteractObject();
             if (interactObject != null)
@@ -96,15 +95,8 @@ public class PlayerController : MonoBehaviour
             case ResourceType.Rock:
                 amountRock += amount;
                 break;
-            case ResourceType.Leaf:
-                amountLeaf += amount;
-                break;
         }
 
-
-        Debug.Log("Amount wood: " + amountWood);
-        Debug.Log("Amount water: " + amountWater);
-        Debug.Log("Amount rock: " + amountRock);
-        Debug.Log("Amount leaf: " + amountLeaf);
+        GameManager.Instance.gameController.uiController.UpdateResourceText();
     }
 }

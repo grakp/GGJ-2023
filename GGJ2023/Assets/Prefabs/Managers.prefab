@@ -97,10 +97,10 @@ MonoBehaviour:
     numObjects: 30
   - tiledObjectPrefab: {fileID: 5483216928425226637, guid: d213e59984808c5469eb8a0ede11ed9a, type: 3}
     numObjects: 30
-  - tiledObjectPrefab: {fileID: 0}
+  - tiledObjectPrefab: {fileID: 5483216928425226637, guid: ad87f962e5630ac478891743dcd57451, type: 3}
     numObjects: 30
   emptyDistanceFromCenter: 5
-  waterTilePrefab: {fileID: 2887272285886651208, guid: 93eaaed0fc5be364cb5e65089f3bf1de, type: 3}
+  waterTilePrefab: {fileID: 7600776276201325487, guid: 93eaaed0fc5be364cb5e65089f3bf1de, type: 3}
   numRivers: 15
   waterWalkIterations: 2
   waterWalkLength: 4
