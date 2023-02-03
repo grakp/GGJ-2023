@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    public ShopkeeperUIController shopkeeperUIController;
+    
     public Slider playerHealthSlider;
     public TMP_Text woodResourceText;
     public TMP_Text waterResourceText;

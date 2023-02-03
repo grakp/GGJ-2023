@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7404731219657763094}
   - component: {fileID: 7404731219657763095}
   - component: {fileID: 7404731219657763092}
+  - component: {fileID: 1019820380}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -48,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileManager: {fileID: 7404731219657763095}
   mapGenerator: {fileID: 7404731219657763092}
+  resourceManager: {fileID: 1019820380}
 --- !u!114 &7404731219657763095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,7 +87,7 @@ MonoBehaviour:
   alternativeGrassTileChance: 0.1
   TestPrefab: {fileID: 9208667115135888686, guid: 7993a6720c219cd42b2829404834b581, type: 3}
   spawnParams:
-  - tiledObjectPrefab: {fileID: 9208667115135888686, guid: 7993a6720c219cd42b2829404834b581, type: 3}
+  - tiledObjectPrefab: {fileID: 240168030, guid: 7993a6720c219cd42b2829404834b581, type: 3}
     numObjects: 10
   - tiledObjectPrefab: {fileID: -2851313591888923521, guid: 14433dab5020e844296c5105642ffd9e, type: 3}
     numObjects: 45
@@ -93,7 +95,7 @@ MonoBehaviour:
     numObjects: 45
   - tiledObjectPrefab: {fileID: 8153999305673257778, guid: eff8b0d1eac94084dbf422271a10a2f2, type: 3}
     numObjects: 30
-  - tiledObjectPrefab: {fileID: 3382398173751632741, guid: 0c5207e2c8023864c9e89bcc6fdb3fa9, type: 3}
+  - tiledObjectPrefab: {fileID: 5853396129714741781, guid: 0c5207e2c8023864c9e89bcc6fdb3fa9, type: 3}
     numObjects: 30
   - tiledObjectPrefab: {fileID: 5483216928425226637, guid: d213e59984808c5469eb8a0ede11ed9a, type: 3}
     numObjects: 30
@@ -130,3 +132,60 @@ MonoBehaviour:
   spawnableObjects:
   - width: 0
     height: 0
+--- !u!114 &1019820380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7404731219657763093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddfc32e50d149284eb9e8acfe3f67c48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shopPoolParams:
+    possibleShopKeepers:
+    - {fileID: 702732716, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: -1143201293, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: -1448599050, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: -1755436553, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: -2139507741, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: 301359454, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: 1074349653, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: -1902126659, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: 938279931, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: -1220451726, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: 1518408041, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: 2087622136, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: 1295632718, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: -945785876, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    - {fileID: 166254889, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    possibleItemTypes:
+    - minCost: 5
+      maxCost: 60
+      possibleSprites:
+      - {fileID: -14187780, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 656979245, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 1860180906, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: -1750515929, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 1532854473, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 884599614, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 784977468, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: -1977409549, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 720075413, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 109216756, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 25286821, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      stat: 0
+      baseStatPerCost: 1
+      statVariance: 30
+    - minCost: 5
+      maxCost: 125
+      possibleSprites:
+      - {fileID: 1368492110, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 668125808, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: -783505340, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      - {fileID: 828535536, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+      stat: 1
+      baseStatPerCost: 2
+      statVariance: 75
