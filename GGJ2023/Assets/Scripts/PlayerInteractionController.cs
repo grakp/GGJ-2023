@@ -36,6 +36,7 @@ public class PlayerInteractionController : MonoBehaviour
 
         if (interactableGameObjects.Contains(tiledGameObject))
         {
+            tiledGameObject.UnInteract();
             interactableGameObjects.Remove(tiledGameObject);
         }
     }

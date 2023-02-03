@@ -80,6 +80,14 @@ public class PlayerController : MonoBehaviour
                 interactObject.Interact(this);
             }
         }
+
+        // Cheats REMOVE ME
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            Give(ResourceType.Wood, 99);
+            Give(ResourceType.Water, 99);
+            Give(ResourceType.Rock, 99);
+        }
     }
 
     public void Give(ResourceType type, int amount)
@@ -97,6 +105,20 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
+        GameManager.Instance.gameController.uiController.UpdateResourceText();
+    }
+
+    public void Give(ShopItemInstance shopItem)
+    {
+        // TODO:
+        Debug.Log("Given item: " + shopItem.description);
+    }
+
+    public void Take(int wood, int water, int rock)
+    {
+        amountWood -= wood;
+        amountWater -= water;
+        amountRock -= rock;
         GameManager.Instance.gameController.uiController.UpdateResourceText();
     }
 }

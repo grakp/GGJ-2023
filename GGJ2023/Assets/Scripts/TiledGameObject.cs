@@ -20,12 +20,16 @@ public class TiledGameObject : MonoBehaviour
         originTile = null;
     }
 
-    public void Initialize(TileInfo tileInfo)
+    public virtual void Initialize(TileInfo tileInfo)
     {
         originTile = tileInfo;
     }
 
     public virtual void Interact(PlayerController player)
+    {
+    }
+
+    public virtual void UnInteract()
     {
     }
 }

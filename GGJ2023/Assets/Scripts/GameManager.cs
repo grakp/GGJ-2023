@@ -6,6 +6,7 @@ public class GameManager : Singleton<GameManager>
 {
     public TileManager tileManager;
     public MapGenerator mapGenerator;
+    public StaticResourceManager resourceManager;
 
     // Per-map game controller instance
     public GameController gameController{get; set;}
