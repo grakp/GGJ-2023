@@ -10,6 +10,8 @@
 /GGJ2023/[Ll]ogs/
 /GGJ2023/[Mm]emoryCaptures/
 
+.DS_Store
+
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 
