@@ -19,12 +19,29 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
 
     bool firstTimeEnabled = false;
 
+    public bool isEnabled = false;
+
     public void SetEnabled(bool enabled)
     {
-        if (enabled && !firstTimeEnabled)
+        if (isEnabled == enabled)
+        {
+            return;
+        }
+
+        isEnabled = enabled;
+
+        if (enabled)
         {
            GetCurrentRoomPlayers();
-           firstTimeEnabled = true;
+        }
+        else
+        {
+            playerListings.Clear();
+
+            foreach (Transform child in content.transform)
+            {
+                Destroy(child.gameObject);
+            }
         }
     }
 

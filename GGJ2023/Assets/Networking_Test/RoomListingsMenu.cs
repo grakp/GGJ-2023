@@ -17,11 +17,30 @@ public class RoomListingsMenu : MonoBehaviourPunCallbacks
 
     private List<RoomListing> roomListings = new List<RoomListing>();
 
+    public bool isEnabled = true;
+
     public void SetEnabled(bool enabled)
     {
+        if (isEnabled == enabled)
+        {
+            return;
+        }
 
+        isEnabled = enabled;
+
+        if (enabled)
+        {
+        }
+        else
+        {
+            roomListings.Clear();
+
+            foreach (Transform child in content.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
     }
-
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         base.OnRoomListUpdate(roomList);
