@@ -13,13 +13,14 @@ public class UIController : MonoBehaviour
     public TMP_Text waterResourceText;
     public TMP_Text stoneResourceText;
 
-    public PlayerController player;
+    private PlayerController player;
 
     private BaseUnit playerBaseUnit;
 
     // Start is called before the first frame update
     void Start()
     {
+        player = GameManager.Instance.gameController.GetMyPlayer();
         playerBaseUnit = player.GetComponent<BaseUnit>();
         // Should probably have max health later...
         playerHealthSlider.maxValue = playerBaseUnit.health;

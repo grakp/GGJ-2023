@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private Transform target;
+    
     [SerializeField] private int edgeScrollSize = 30;
     [SerializeField] private float smoothTime = 0.25f;
 
     private Vector3 offset = new Vector3(0f, 0f, -10f);
     private Vector3 velocity = new Vector3(0, 0, 0);
+
+    private Transform target;
+
+    void Start()
+    {
+        target = GameManager.Instance.gameController.GetMyPlayer().transform;
+    }
 
     // Update is called once per frame
     void Update()

@@ -47,8 +47,10 @@ public class ShopInstance
     public List<ShopItemInstance> items = new List<ShopItemInstance>();
 };
 
+// Note: This should probably use ScriptableObjects instead, but I'm too lazy to change it
 public class StaticResourceManager : MonoBehaviour
 {
+    public PlayerController playerPrefab;
 
     public ShopPoolParams shopPoolParams;
 

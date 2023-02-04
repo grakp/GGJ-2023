@@ -48,7 +48,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnedObjectParent: {fileID: 0}
   uiController: {fileID: 0}
-  player: {fileID: 0}
   tileManager: {fileID: 19427948}
   mapGenerator: {fileID: 19427947}
 --- !u!114 &19427947

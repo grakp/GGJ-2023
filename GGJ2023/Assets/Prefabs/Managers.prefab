@@ -47,8 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 718a307921ea02d43bc560f6683662c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileManager: {fileID: 0}
-  mapGenerator: {fileID: 0}
   resourceManager: {fileID: 1019820380}
   networkingManager: {fileID: 7186859170484931812}
 --- !u!114 &1019820380
@@ -63,6 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddfc32e50d149284eb9e8acfe3f67c48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 3838462092617049769, guid: 676c222b32edb400197f8b50af4792da, type: 3}
   shopPoolParams:
     possibleShopKeepers:
     - {fileID: 702732716, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
