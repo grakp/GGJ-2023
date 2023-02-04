@@ -26,8 +26,6 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         // Do generate map in Start because need reference to controller
-
-
     }
 
     public TileManager Game_GetTilemapManager()

@@ -51,6 +51,7 @@ public class NetworkingSingleton : SingletonScriptableObject<NetworkingSingleton
                 if (networkedPrefab.path != string.Empty)
                 {
                     GameObject result = PhotonNetwork.Instantiate(networkedPrefab.path, position, rotation);
+                    return result;
                 }
                 else
                 {

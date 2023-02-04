@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Photon.Realtime;
+using Photon.Pun;
 
 public class PlayerListing : MonoBehaviour
 {
@@ -14,6 +15,6 @@ public class PlayerListing : MonoBehaviour
     public void SetPlayerInfo(Player player)
     {
         this.player = player;
-        text.text = player.NickName;
+        text.text = player.ActorNumber + ": " + player.NickName + " " + player.IsLocal;
     }
 }

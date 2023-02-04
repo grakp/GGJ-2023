@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
 {
     // Components
     public Rigidbody2D rb;
@@ -30,10 +31,13 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inputHorizontal = Input.GetAxisRaw("Horizontal");
-        inputVertical = Input.GetAxisRaw("Vertical");
-        inputBasicAttack = Input.GetButtonDown("Fire1") || inputBasicAttack;
-        HandleInteractableInput();
+        if (!PhotonNetwork.IsConnected || base.photonView.IsMine)
+        {
+            inputHorizontal = Input.GetAxisRaw("Horizontal");
+            inputVertical = Input.GetAxisRaw("Vertical");
+            inputBasicAttack = Input.GetButtonDown("Fire1") || inputBasicAttack;
+            HandleInteractableInput();
+        }
     }
 
     void FixedUpdate() 
@@ -121,4 +125,32 @@ public class PlayerController : MonoBehaviour
         amountRock -= rock;
         GameManager.Instance.gameController.uiController.UpdateResourceText();
     }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        // TODO make sure that self is/not included in list
+        if (info.photonView.gameObject == null)
+        {
+            return;
+        }
+
+        if (!base.photonView.IsMine)
+        {
+            // Add remote players
+            GameManager.Instance.gameController.AddRemotePlayer(this, info.Sender);
+        }
+        else
+        {
+            GameManager.Instance.gameController.SetNetworkPlayerInfo(0, info.Sender);
+        }
+
+        /*
+
+        PlayerController controller = info.photonView.gameObject.GetComponent<PlayerController>();
+        if (controller != null)
+        {
+            players.Add(controller);
+        }*/
+    }
+
 }
