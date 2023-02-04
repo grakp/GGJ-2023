@@ -58,12 +58,22 @@ public class RoomListingsMenu : MonoBehaviourPunCallbacks
             }
             else
             {
-                RoomListing listing = Instantiate(roomListing, content);
-                if (listing != null)
+                int index = roomListings.FindIndex(x => x.roomInfo.Name == info.Name);
+                if (index == -1)
                 {
-                    listing.SetRoomInfo(info);
-                    roomListings.Add(listing);
+                    RoomListing listing = Instantiate(roomListing, content);
+                    if (listing != null)
+                    {
+                        listing.SetRoomInfo(info);
+                        roomListings.Add(listing);
+                    }
                 }
+                else
+                {
+                    // Modiffy the listing here
+                    // roomListings[index].whatever
+                }
+
             }
         }
     }

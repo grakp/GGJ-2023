@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class CurrentRoomMenu : MonoBehaviour
@@ -34,6 +35,14 @@ public class CurrentRoomMenu : MonoBehaviour
     {
         parentContainer.gameObject.SetActive(enabled);
         listingsMenu.SetEnabled(enabled);
+    }
+
+
+    public void OnButtonClicked_LeaveRoom()
+    {
+        PhotonNetwork.LeaveRoom(true);
+
+        cachedParentUI.SwitchToCreateRoomMenu();
     }
     
 }

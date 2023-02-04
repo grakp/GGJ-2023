@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Networking_Test/atu_NetworkingTest.unity
     guid: 64aeeb27dfc8a744a80c210a80fee2ee
+  - enabled: 1
+    path: Assets/Networking_Test/atu_NetworkingTestGameScene.unity
+    guid: 817947bf28e0eaf4abbe2940d7d96530
   m_configObjects: {}
