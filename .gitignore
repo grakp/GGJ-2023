@@ -2,6 +2,9 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
+/GGJ2023/UserSettings/
+
+
 /GGJ2023/[Ll]ibrary/
 /GGJ2023/[Tt]emp/
 /GGJ2023/[Oo]bj/
