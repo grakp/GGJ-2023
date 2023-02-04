@@ -137,6 +137,6 @@ public class ShopkeeperUIItemOption : MonoBehaviour
 
     private PlayerController GetPlayerController()
     {
-        return GameManager.Instance.gameController.player;
+        return GameManager.Instance.gameController.GetMyPlayer();
     }
 }
