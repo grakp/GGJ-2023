@@ -1645,7 +1645,6 @@ MonoBehaviour:
   woodResourceText: {fileID: 216506850}
   waterResourceText: {fileID: 442223899}
   stoneResourceText: {fileID: 1531854225}
-  player: {fileID: 0}
 --- !u!1 &1141078389
 GameObject:
   m_ObjectHideFlags: 0
@@ -1881,7 +1880,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f29b0ea376b92475580f05aa00173c74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   edgeScrollSize: 30
   smoothTime: 0.25
 --- !u!81 &1295373508
@@ -4683,7 +4681,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f29b0ea376b92475580f05aa00173c74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   edgeScrollSize: 30
   smoothTime: 0.25
 --- !u!81 &2038683241
@@ -9961,10 +9958,6 @@ PrefabInstance:
     - target: {fileID: 2865864814137779603, guid: f63985d3c2be610409f46a4944556813, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2865864814137779604, guid: f63985d3c2be610409f46a4944556813, type: 3}
-      propertyPath: player
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2865864814137779604, guid: f63985d3c2be610409f46a4944556813, type: 3}
       propertyPath: uiController
