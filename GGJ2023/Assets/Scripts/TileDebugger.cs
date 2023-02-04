@@ -13,10 +13,10 @@ public class TileDebugger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        TileInfo tile = GameManager.Instance.tileManager.GetTileInWorld(transform.position);
+        TileInfo tile =GameManager.Instance.Game_GetTilemapManager().GetTileInWorld(transform.position);
         if (tile != null)
         {
-            int corner = GameManager.Instance.tileManager.GetTileIndexFromCorner(tile.corners);
+            int corner = GameManager.Instance.Game_GetTilemapManager().GetTileIndexFromCorner(tile.corners);
             Debug.Log(tile.tileType + " " + corner);
         }
 

@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    public TileManager tileManager;
-    public MapGenerator mapGenerator;
     public StaticResourceManager resourceManager;
     public NetworkingManager networkingManager;
 
@@ -28,27 +26,28 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         // Do generate map in Start because need reference to controller
-        GenerateMap();
+
+
     }
 
-    public void GenerateMap()
+    public TileManager Game_GetTilemapManager()
     {
-        if (!PhotonNetwork.IsConnected)
+        if (gameController == null)
         {
-            Debug.LogWarning("Photon is not connected. Map will not be replicated.");
-            mapGenerator.GenerateMap(tileManager.GenerateMap);
+            return null;
         }
-        else
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                mapGenerator.GenerateMap(tileManager.GenerateMap);
-                // TODO: replicate
-            }
-            else
-            {
-                // TODO: Wait for replication of world seed
-            }
-        }
+
+        return gameController.tileManager;
     }
+
+    public MapGenerator Game_GetMapGenerator()
+    {
+        if (gameController == null)
+        {
+            return null;
+        }
+
+        return gameController.mapGenerator;
+    }
+
 }

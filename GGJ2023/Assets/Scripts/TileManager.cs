@@ -108,7 +108,7 @@ public class TileManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            GameManager.Instance.GenerateMap();
+            GameManager.Instance.gameController.GenerateMap();
         }
     }
 

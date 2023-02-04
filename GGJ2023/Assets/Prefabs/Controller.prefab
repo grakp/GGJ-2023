@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2865864814137779603}
   - component: {fileID: 2865864814137779604}
+  - component: {fileID: 19427947}
+  - component: {fileID: 19427948}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -46,3 +48,88 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnedObjectParent: {fileID: 0}
   uiController: {fileID: 0}
+  player: {fileID: 0}
+  tileManager: {fileID: 19427948}
+  mapGenerator: {fileID: 19427947}
+--- !u!114 &19427947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2865864814137779605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d18a65f45767dc4da4a4954c90e7d42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 100
+  height: 100
+  seed: 38.56604
+  useRandomSeed: 1
+  randomFillPercent: 50
+  emptyDistanceFromCenter: 5
+  numSmoothIterations: 1
+  passagewaySize: 1
+  wallThresholdSize: 10
+  roomThresholdSize: 90
+  spawnableObjects:
+  - width: 0
+    height: 0
+--- !u!114 &19427948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2865864814137779605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e09146ed891ee1944b9bead1c9daacfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilemap: {fileID: 0}
+  floorTiles:
+  - {fileID: 11400000, guid: f57970b205167b7488225b9d60082d5f, type: 2}
+  - {fileID: 11400000, guid: 3f6b01314bbdb034a8f09a00dcda8a41, type: 2}
+  - {fileID: 11400000, guid: 030a5699e9a8ac74db1de39cb3e388eb, type: 2}
+  - {fileID: 11400000, guid: e6544f99b49c07a4d8aa018c48d651eb, type: 2}
+  - {fileID: 11400000, guid: e744b3417e47fb24eb359407e89c487e, type: 2}
+  - {fileID: 11400000, guid: 0ddedd5f2cb285e42bd98a0d6f01cd2e, type: 2}
+  - {fileID: 11400000, guid: bb77db23af62a274d8ee6faf78835d6d, type: 2}
+  - {fileID: 11400000, guid: 607be29e471fbe3438f97d4efa1a1c24, type: 2}
+  - {fileID: 11400000, guid: f2ea9f0b353478e4cab5082deb76c524, type: 2}
+  - {fileID: 11400000, guid: 00c15ac1d6a1a1d459831b5b702ab31b, type: 2}
+  - {fileID: 11400000, guid: 54955eccb7bc7084794be411f12dadcd, type: 2}
+  - {fileID: 11400000, guid: ba7f62c4314649f4c8852cd938b2b5a3, type: 2}
+  - {fileID: 11400000, guid: 91aafa76ec0b73f4f9ee905bf1bb8f47, type: 2}
+  - {fileID: 11400000, guid: 960c58a956a2c1a479a4c7c0dc97a5f1, type: 2}
+  - {fileID: 11400000, guid: e33350291861a6c46b6257a2897c7586, type: 2}
+  - {fileID: 11400000, guid: 95512344f87cf024b883e56e7a7240f3, type: 2}
+  grassTile: {fileID: 11400000, guid: 35bed6616fb06ce4986601ebf44ec9ce, type: 2}
+  alternativeGrassTiles:
+  - {fileID: 11400000, guid: 08c4a152103d3324eae6c201997e2061, type: 2}
+  - {fileID: 11400000, guid: 3e44f01ba933df04fa72f220b8be8426, type: 2}
+  alternativeGrassTileChance: 0.1
+  TestPrefab: {fileID: 9208667115135888686, guid: 7993a6720c219cd42b2829404834b581, type: 3}
+  spawnParams:
+  - tiledObjectPrefab: {fileID: 240168030, guid: 7993a6720c219cd42b2829404834b581, type: 3}
+    numObjects: 10
+  - tiledObjectPrefab: {fileID: -2851313591888923521, guid: 14433dab5020e844296c5105642ffd9e, type: 3}
+    numObjects: 45
+  - tiledObjectPrefab: {fileID: 5631729447146398238, guid: fe7798b94bfff1143a3b8254c401767b, type: 3}
+    numObjects: 45
+  - tiledObjectPrefab: {fileID: 8153999305673257778, guid: eff8b0d1eac94084dbf422271a10a2f2, type: 3}
+    numObjects: 30
+  - tiledObjectPrefab: {fileID: 5853396129714741781, guid: 0c5207e2c8023864c9e89bcc6fdb3fa9, type: 3}
+    numObjects: 30
+  - tiledObjectPrefab: {fileID: 5483216928425226637, guid: d213e59984808c5469eb8a0ede11ed9a, type: 3}
+    numObjects: 30
+  - tiledObjectPrefab: {fileID: 5483216928425226637, guid: ad87f962e5630ac478891743dcd57451, type: 3}
+    numObjects: 30
+  emptyDistanceFromCenter: 5
+  waterTilePrefab: {fileID: 7600776276201325487, guid: 93eaaed0fc5be364cb5e65089f3bf1de, type: 3}
+  numRivers: 15
+  waterWalkIterations: 2
+  waterWalkLength: 4
+  waterWalkStartRandomlyEachIteration: 1
