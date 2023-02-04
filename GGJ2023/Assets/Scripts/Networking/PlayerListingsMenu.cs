@@ -27,6 +27,9 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
     [SerializeField]
     private Button joinRoomButton;
 
+    [SerializeField]
+    private string sceneNameToMoveTo = "atu_NetworkingTestGameScene";
+
     public void SetEnabled(bool enabled)
     {
         if (isEnabled == enabled)
@@ -135,7 +138,7 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
 
         //int index = SceneUtility.GetBuildIndexByScenePath("Networking_Test/atu_NetworkingTestGameScene");
         //Debug.Log(index);
-        PhotonNetwork.LoadLevel("atu_NetworkingTestGameScene");
+        PhotonNetwork.LoadLevel(sceneNameToMoveTo);
         //SceneManager.LoadScene("atu_NetworkingTestGameScene");
 
         

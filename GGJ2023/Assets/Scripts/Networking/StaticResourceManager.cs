@@ -57,20 +57,20 @@ public class StaticResourceManager : MonoBehaviour
     {
         ShopInstance shopInstance = new ShopInstance();
 
-        int rand = Random.Range(0, shopPoolParams.possibleShopKeepers.Count);
+        int rand = NetworkingManager.RandomRangeUsingWorldSeed(0, shopPoolParams.possibleShopKeepers.Count);
         shopInstance.shopkeeperSprite = shopPoolParams.possibleShopKeepers[rand];
 
         for (int i = 0; i < numItems; i++)
         {
-            rand = Random.Range(0, shopPoolParams.possibleItemTypes.Count);
+            rand = NetworkingManager.RandomRangeUsingWorldSeed(0, shopPoolParams.possibleItemTypes.Count);
             ShopPoolItemParams itemParams = shopPoolParams.possibleItemTypes[rand];
 
             ShopItemInstance newItem = new ShopItemInstance();
 
-            int totalCost = Random.Range(itemParams.minCost, itemParams.maxCost);
+            int totalCost = NetworkingManager.RandomRangeUsingWorldSeed(itemParams.minCost, itemParams.maxCost);
             for (int j = 0; j < totalCost; j++)
             {
-                rand = Random.Range(0, 3);
+                rand = NetworkingManager.RandomRangeUsingWorldSeed(0, 3);
                 if (rand == 0)
                 {
                     // Wood
@@ -88,11 +88,11 @@ public class StaticResourceManager : MonoBehaviour
                 }
             }
 
-            int magnifier = Mathf.Max(totalCost * itemParams.baseStatPerCost + Random.Range(-itemParams.statVariance, itemParams.statVariance), 1);
+            int magnifier = Mathf.Max(totalCost * itemParams.baseStatPerCost + NetworkingManager.RandomRangeUsingWorldSeed(-itemParams.statVariance, itemParams.statVariance), 1);
             newItem.magnifier = magnifier;
             newItem.stat = itemParams.stat;
 
-            rand = Random.Range(0, itemParams.possibleSprites.Count);
+            rand = NetworkingManager.RandomRangeUsingWorldSeed(0, itemParams.possibleSprites.Count);
             newItem.itemSprite = itemParams.possibleSprites[rand];
 
             string statName = "";

@@ -35,6 +35,6 @@ public static class Direction2D
 
     public static Vector2Int GetRandomCardinalDirection()
     {
-        return cardinalDirectionsList[UnityEngine.Random.Range(0, cardinalDirectionsList.Count)];
+        return cardinalDirectionsList[NetworkingManager.RandomRangeUsingWorldSeed(0, cardinalDirectionsList.Count)];
     }
 }
