@@ -128,7 +128,7 @@ public class MapGenerator : MonoBehaviour {
         }
 
 
-        openLocations.Shuffle<Coord>();
+        openLocations.Shuffle<Coord>(NetworkingManager.worldSeedRandom);
 
         for (int i = 0; i < count; i++) {
             coords.Add(openLocations[i]);
@@ -497,6 +497,11 @@ public class MapGenerator : MonoBehaviour {
         }
 
         System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+
+         if (Photon.Pun.PhotonNetwork.IsConnected)
+         {
+            pseudoRandom = NetworkingManager.worldSeedRandom;
+         }
 
         for (int x = 0; x < width; x ++) {
             for (int y = 0; y < height; y ++) {

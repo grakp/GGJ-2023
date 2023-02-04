@@ -193,10 +193,10 @@ public class TileManager : MonoBehaviour
                 TileBase tile = null;
                 if (info.tileType == TileType.Grass)
                 {
-                    float chance = Random.Range(0.0f, 1.0f);
+                    float chance = NetworkingManager.RandomRangeUsingWorldSeed(0.0f, 1.0f);
                     if (chance < alternativeGrassTileChance)
                     {
-                        int index = Random.Range(0, alternativeGrassTiles.Count);
+                        int index = NetworkingManager.RandomRangeUsingWorldSeed(0, alternativeGrassTiles.Count);
                         tile = alternativeGrassTiles[index];
                     }
                     else
@@ -228,12 +228,8 @@ public class TileManager : MonoBehaviour
                 }
 
                 List<TileInfo> emptyTileList = cachedEmptyTiles.ToList();
-                emptyTileList.Shuffle();
+                emptyTileList.Shuffle(NetworkingManager.worldSeedRandom);
                 TileInfo tile = emptyTileList[i];
-                if (tile == null)
-                {
-                    Debug.Log("AAAAAAAA");
-                }
 
                 HashSet<Vector2Int> riverTiles = RunRandomWalk(tile.positionInArray, waterWalkIterations, waterWalkLength, waterWalkStartRandomlyEachIteration);
                 foreach (Vector2Int riverTile in riverTiles)
@@ -258,7 +254,7 @@ public class TileManager : MonoBehaviour
             for (int i = 0; i < param.numObjects; i++)
             {
                 List<TileInfo> emptyTileList = cachedEmptyTiles.ToList();
-                emptyTileList.Shuffle();
+                emptyTileList.Shuffle(NetworkingManager.worldSeedRandom);
 
                 int foundTileIndex = -1;
                 for (int j = emptyTileList.Count - 1; j >= 0; j--)
@@ -535,7 +531,7 @@ public class TileManager : MonoBehaviour
 
             floorPositions.UnionWith(path);
             if (startRandomlyEachIteration)
-                currentPosition = floorPositions.ElementAt(Random.Range(0, floorPositions.Count));
+                currentPosition = floorPositions.ElementAt(NetworkingManager.RandomRangeUsingWorldSeed(0, floorPositions.Count));
         }
         return floorPositions;
     }
@@ -555,7 +551,7 @@ public class TileManager : MonoBehaviour
         for (int i = 0; i < walkLength; i++)
         {
             List<Vector2Int> cardinalDirectionsList = Direction2D.cardinalDirectionsList;
-            cardinalDirectionsList.Shuffle();
+            cardinalDirectionsList.Shuffle(NetworkingManager.worldSeedRandom);
 
             bool bFoundTile = false;
             Vector2Int newPosition = new Vector2Int();
