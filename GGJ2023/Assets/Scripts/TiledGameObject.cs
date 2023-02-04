@@ -11,9 +11,9 @@ public class TiledGameObject : MonoBehaviour
     {
         if (originTile != null)
         {
-            if (GameManager.Instance != null && GameManager.Instance.tileManager != null)
+            if (GameManager.Instance != null &&  GameManager.Instance.Game_GetTilemapManager() != null)
             {
-                GameManager.Instance.tileManager.RemoveTileInUse(this, originTile);
+                GameManager.Instance.Game_GetTilemapManager().RemoveTileInUse(this, originTile);
             }
         }
 
