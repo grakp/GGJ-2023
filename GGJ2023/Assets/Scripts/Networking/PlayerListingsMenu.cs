@@ -88,6 +88,8 @@ public class PlayerListingsMenu : MonoBehaviourPunCallbacks
                 listing.SetPlayerInfo(player);
                 playerListings.Add(listing);
             }
+
+            // TODO: Cache player in a game manager
         }
     }
 

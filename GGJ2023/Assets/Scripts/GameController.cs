@@ -3,7 +3,13 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class GameController : MonoBehaviour, IPunInstantiateMagicCallback
+public class GamePlayerInfo
+{
+    public PlayerController controller = null;
+    public Photon.Realtime.Player playerNetworkInfo = null;
+};
+
+public class GameController : MonoBehaviour
 {
     public Transform spawnedObjectParent;
 
@@ -13,7 +19,7 @@ public class GameController : MonoBehaviour, IPunInstantiateMagicCallback
 
     public MapGenerator mapGenerator;
 
-    private List<PlayerController> players = new List<PlayerController>();
+    private List<GamePlayerInfo> players = new List<GamePlayerInfo>();
 
     
     // Start is called before the first frame update
@@ -53,26 +59,36 @@ public class GameController : MonoBehaviour, IPunInstantiateMagicCallback
             else
             {
                 // TODO: Wait for replication of world seed
+                mapGenerator.GenerateMap(tileManager.GenerateMap);
             }
         }
     }
 
     private void GeneratePlayer()
     {
+        // Add the player info first because instnatiate callback is not null on callback
+        GamePlayerInfo newInfo = new GamePlayerInfo();
+        players.Add(newInfo);
+
         PlayerController player = null;
         if (!PhotonNetwork.IsConnected)
         {
-            player = Instantiate<PlayerController>(GameManager.Instance.resourceManager.playerPrefab, Vector3.zero, Quaternion.identity);
+            GameObject playerObj = Instantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, Vector3.zero, Quaternion.identity);
+            player = playerObj.GetComponent<PlayerController>();
         }
         else
         {
-            GameObject playerObj = NetworkingSingleton.NetworkInstantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, Vector3.zero, Quaternion.identity);
+
+            int localActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+            Vector3 spawnLocation = Vector3.right * localActorNumber;
+            GameObject prefab = GameManager.Instance.resourceManager.playerPrefab.gameObject;
+            GameObject playerObj = NetworkingSingleton.NetworkInstantiate(prefab, spawnLocation, Quaternion.identity);
             player = playerObj.GetComponent<PlayerController>();
         }
 
         if (player != null)
         {
-            players.Add(player);
+            newInfo.controller = player;
         }
         else
         {
@@ -82,22 +98,22 @@ public class GameController : MonoBehaviour, IPunInstantiateMagicCallback
 
     public PlayerController GetMyPlayer()
     {
-        return players[0];
+        return players[0].controller;
     }
 
-    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    public void SetNetworkPlayerInfo(int index, Photon.Realtime.Player networkInfo)
     {
-        // TODO make sure that self is/not included in list
-        if (info.photonView.gameObject == null)
-        {
-            return;
-        }
-
-        PlayerController controller = info.photonView.gameObject.GetComponent<PlayerController>();
-        if (controller != null)
-        {
-            players.Add(controller);
-        }
+        players[index].playerNetworkInfo = networkInfo;
     }
+
+    public void AddRemotePlayer(PlayerController player, Photon.Realtime.Player networkInfo)
+    {
+        GamePlayerInfo newInfo = new GamePlayerInfo();
+        newInfo.controller = player;
+        newInfo.playerNetworkInfo = networkInfo;
+        players.Add(newInfo);
+    }
+
+
 }
 
