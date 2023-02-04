@@ -20,13 +20,14 @@ public class GameController : MonoBehaviour, IPunInstantiateMagicCallback
     void Awake()
     {
         GameManager.Instance.gameController = this;
+
         GenerateMap();
         GeneratePlayer();
-
     }
 
     void Start()
     {
+
     }
 
     // Update is called once per frame
@@ -58,24 +59,24 @@ public class GameController : MonoBehaviour, IPunInstantiateMagicCallback
 
     private void GeneratePlayer()
     {
+        PlayerController player = null;
         if (!PhotonNetwork.IsConnected)
         {
-            PlayerController player = (PlayerController)Instantiate(GameManager.Instance.resourceManager.playerPrefab, Vector3.zero, Quaternion.identity);
-            players.Add(player);
-            Debug.Log("Added player");
+            player = Instantiate<PlayerController>(GameManager.Instance.resourceManager.playerPrefab, Vector3.zero, Quaternion.identity);
         }
         else
         {
-            // TODO:
-            //if (PhotonNetwork.IsMasterClient)
-            //{
-            //    mapGenerator.GenerateMap(tileManager.GenerateMap);
-            //    // TODO: replicate
-            //}
-            //else
-            //{
-            //    // TODO: Wait for replication of world seed
-            //}
+            GameObject playerObj = NetworkingSingleton.NetworkInstantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, Vector3.zero, Quaternion.identity);
+            player = playerObj.GetComponent<PlayerController>();
+        }
+
+        if (player != null)
+        {
+            players.Add(player);
+        }
+        else
+        {
+            Debug.LogError("Failed to instantiate player");
         }
     }
 
