@@ -12,7 +12,17 @@ public class Test_Connect : MonoBehaviourPunCallbacks
     {
         Debug.Log("Connecting to server");
         PhotonNetwork.GameVersion = "0.0.1";
-        PhotonNetwork.NickName = "Test_Nickname";
+        string nickname = "Test_Nickname";
+
+    #if UNITY_EDITOR
+        nickname += "_Client";
+    #else
+        nickname += "_Host";
+    #endif
+
+        PhotonNetwork.NickName = nickname;
+
+
         PhotonNetwork.ConnectUsingSettings();
     }
 

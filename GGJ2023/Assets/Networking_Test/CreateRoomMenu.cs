@@ -5,13 +5,24 @@ using TMPro;
 using Photon.Pun;
 //using Photon.Realtime;
 
-
-
 public class CreateRoomMenu : MonoBehaviourPunCallbacks
 {
 
     [SerializeField]
     private TMP_Text roomName;
+
+    private RoomsUI cachedParentUI;
+
+    [SerializeField]
+    private RectTransform parentContainer;
+
+    [SerializeField]
+    private RoomListingsMenu listingsMenu;
+
+    public void Initialize(RoomsUI parentUI)
+    {
+        cachedParentUI = parentUI;
+    }
 
     public void OnClick_CreateRoom()
     {
@@ -33,6 +44,7 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         base.OnCreatedRoom();
 
         Debug.Log("Created room successfully!");
+        cachedParentUI.SwitchToCurrentRoomMenu();
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -41,6 +53,12 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
 
         Debug.Log("Room creation failed");
 
+    }
+
+    public void SetEnabled(bool enabled)
+    {
+        parentContainer.gameObject.SetActive(enabled);
+        listingsMenu.SetEnabled(enabled);
     }
 
 }

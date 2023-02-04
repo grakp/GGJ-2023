@@ -7,10 +7,20 @@ using Photon.Realtime;
 public class RoomListingsMenu : MonoBehaviourPunCallbacks
 {
     [SerializeField]
+    private RoomsUI parentUI;
+
+    [SerializeField]
     private Transform content;
 
     [SerializeField]
     private RoomListing roomListing;
+
+    private List<RoomListing> roomListings = new List<RoomListing>();
+
+    public void SetEnabled(bool enabled)
+    {
+
+    }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
@@ -18,11 +28,31 @@ public class RoomListingsMenu : MonoBehaviourPunCallbacks
 
         foreach (RoomInfo info in roomList)
         {
-            RoomListing listing = Instantiate(roomListing, content);
-            if (listing != null)
+            if (info.RemovedFromList)
             {
-                listing.SetRoomInfo(info);
+                int index = roomListings.FindIndex(x => x.roomInfo.Name == info.Name);
+                if (index != -1)
+                {
+                    Destroy(roomListings[index].gameObject);
+                    roomListings.RemoveAt(index);
+                }
+            }
+            else
+            {
+                RoomListing listing = Instantiate(roomListing, content);
+                if (listing != null)
+                {
+                    listing.SetRoomInfo(info);
+                    roomListings.Add(listing);
+                }
             }
         }
+    }
+
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        parentUI.SwitchToCurrentRoomMenu();
     }
 }
