@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
 
     private List<GamePlayerInfo> players = new List<GamePlayerInfo>();
 
+    public bool debug_SpawnInCenterOfMap = false;
+
     
     // Start is called before the first frame update
     void Awake()
@@ -78,7 +80,14 @@ public class GameController : MonoBehaviour
             GamePlayerInfo newInfo = new GamePlayerInfo();
             List<Vector3> spawnLocations = tileManager.GetPlayerStartLocations();
 
-            GameObject playerObj = Instantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, spawnLocations[0], Quaternion.identity);
+            Vector3 spawnLocation = spawnLocations[0];
+
+            if (debug_SpawnInCenterOfMap)
+            {
+                spawnLocation = Vector3.zero;
+            }
+
+            GameObject playerObj = Instantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, spawnLocation, Quaternion.identity);
             player = playerObj.GetComponent<PlayerController>();
 
             newInfo.controller = player;
@@ -90,6 +99,11 @@ public class GameController : MonoBehaviour
             int localActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
             List<Vector3> spawnLocations = tileManager.GetPlayerStartLocations();
             Vector3 spawnLocation = spawnLocations[localActorNumber - 1];
+            if (debug_SpawnInCenterOfMap)
+            {
+                spawnLocation = Vector3.zero + Vector3.right * (localActorNumber - 1);
+            }
+
             GameObject prefab = GameManager.Instance.resourceManager.playerPrefab.gameObject;
             GameObject playerObj = NetworkingSingleton.NetworkInstantiate(prefab, spawnLocation, Quaternion.identity);
             // Rest will be done in PlayerController
@@ -150,6 +164,18 @@ public class GameController : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void SpawnEnemy(AiController enemyPrefab, Vector3 spawnLocation)
+    {
+        if (GameManager.Instance.networkingManager.IsDebuggingMode)
+        {
+            Instantiate(enemyPrefab, spawnLocation, Quaternion.identity);
+        }
+        else
+        {
+            NetworkingSingleton.NetworkInstantiate(enemyPrefab.gameObject, spawnLocation, Quaternion.identity);
+        }
     }
 
 }
