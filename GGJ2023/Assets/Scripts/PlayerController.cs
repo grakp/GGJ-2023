@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
     public int amountWater{get; set;}
     public int amountRock{get; set;}
 
+    public int actorNumber{get; set;}
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,7 +83,7 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
             TiledGameObject interactObject = interactionController.GetInteractObject();
             if (interactObject != null)
             {
-                interactObject.Interact(this);
+                interactObject.RequestInteract(this);
             }
         }
 

@@ -119,6 +119,7 @@ public class GameController : MonoBehaviour
     {
         GamePlayerInfo newInfo = new GamePlayerInfo();
         newInfo.controller = player;
+        newInfo.controller.actorNumber = networkInfo.ActorNumber;
         newInfo.playerNetworkInfo = networkInfo;
 
         if (player.photonView.IsMine)
@@ -132,6 +133,19 @@ public class GameController : MonoBehaviour
         }
 
         players.Add(newInfo);
+    }
+
+    public GamePlayerInfo GetPlayerFromActorNumber(int actorNumber)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].playerNetworkInfo != null && players[i].playerNetworkInfo.ActorNumber == actorNumber)
+            {
+                return players[i];
+            }
+        }
+
+        return null;
     }
 
 }
