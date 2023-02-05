@@ -19,9 +19,23 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
     [SerializeField]
     private RoomListingsMenu listingsMenu;
 
+    [SerializeField]
+    private TMP_InputField nicknameText;
+
+    void Start()
+    {
+        nicknameText.text = GetExampleUsername();
+        OnUsernameTextChanged();
+    }
+
     public void Initialize(RoomsUI parentUI)
     {
         cachedParentUI = parentUI;
+    }
+
+    private string GetExampleUsername()
+    {
+        return "Player_" + Random.Range(0, 1000);
     }
 
     public void OnClick_CreateRoom()
@@ -46,7 +60,6 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
         Debug.Log("Created room successfully!");
         cachedParentUI.SwitchToCurrentRoomMenu();
 
-
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -61,6 +74,11 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
     {
         parentContainer.gameObject.SetActive(enabled);
         listingsMenu.SetEnabled(enabled);
+    }
+
+    public void OnUsernameTextChanged()
+    {
+        PhotonNetwork.NickName = nicknameText.text;
     }
 
 }

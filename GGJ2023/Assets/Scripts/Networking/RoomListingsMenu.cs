@@ -7,6 +7,9 @@ using Photon.Realtime;
 public class RoomListingsMenu : MonoBehaviourPunCallbacks
 {
     [SerializeField]
+    private CreateRoomMenu createRoomMenu;
+
+    [SerializeField]
     private RoomsUI parentUI;
 
     [SerializeField]
