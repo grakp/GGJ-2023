@@ -36,8 +36,13 @@ public class ShopTiledGameObject : TiledGameObject
 
     }
 
-    public override void Interact(PlayerController player)
+    public override void DoInteract(PlayerController player)
     {
+        if (!player.photonView.IsMine)
+        {
+            return;
+        }
+        
         ShopkeeperUIParams shopParams = ConvertToUIParams();
         GetShopController().OpenShop(shopParams);
     }

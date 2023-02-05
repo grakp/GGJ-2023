@@ -67,6 +67,28 @@ public class SetWorldSeedPacket : PacketBase
     public int worldSeed;
 };
 
+
+[System.Serializable]
+public class RequestInteractPacket : PacketBase
+{
+    public const byte id = 3;
+    public override byte packetId { get { return id; } protected set { packetId = value; }}
+    public int actorNumber;
+    public int locationX;
+    public int locationY;
+};
+
+[System.Serializable]
+public class InteractPacket : PacketBase
+{
+    public const byte id = 4;
+    public override byte packetId { get { return id; } protected set { packetId = value; }}
+    public int actorNumber;
+    public int locationX;
+    public int locationY;
+};
+
+
 public class NetworkingManager : MonoBehaviour
 {
     public static int worldSeed = -1;
@@ -87,7 +109,7 @@ public class NetworkingManager : MonoBehaviour
             return;
         }
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient || IsDebuggingMode)
         {
             worldSeed = Time.time.ToString().GetHashCode();
             worldSeedRandom = new System.Random(worldSeed.GetHashCode());
@@ -97,11 +119,13 @@ public class NetworkingManager : MonoBehaviour
         sendToAllOptions.Receivers = Photon.Realtime.ReceiverGroup.All;
         sendToOtherOptions.Receivers = Photon.Realtime.ReceiverGroup.Others;
 
-        PhotonPeer.RegisterType(typeof(TestPacket), TestPacket.id, TestPacket.Serialize, TestPacket.Deserialize);
-        PhotonPeer.RegisterType(typeof(SetWorldSeedPacket), SetWorldSeedPacket.id, SetWorldSeedPacket.Serialize, SetWorldSeedPacket.Deserialize);
+        PhotonPeer.RegisterType(typeof(TestPacket), TestPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
+        PhotonPeer.RegisterType(typeof(SetWorldSeedPacket), SetWorldSeedPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
+        PhotonPeer.RegisterType(typeof(RequestInteractPacket), RequestInteractPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
+        PhotonPeer.RegisterType(typeof(InteractPacket), InteractPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
+
 
         PhotonNetwork.NetworkingClient.EventReceived += Network_OnEventReceived;
-
     
         TestPacket testPacket = new TestPacket();
         SendPacket(testPacket, Photon.Realtime.ReceiverGroup.All);
@@ -146,6 +170,12 @@ public class NetworkingManager : MonoBehaviour
                 break;
             case SetWorldSeedPacket.id:
                 HandlePacket((SetWorldSeedPacket)obj.CustomData);
+                break;
+            case RequestInteractPacket.id:
+                HandlePacket((RequestInteractPacket)obj.CustomData);
+                break;
+            case InteractPacket.id:
+                HandlePacket((InteractPacket)obj.CustomData);
                 break;
             default:
                 if (dataType.IsSubclassOf(typeof(PacketBase)))
@@ -210,6 +240,44 @@ public class NetworkingManager : MonoBehaviour
         worldSeed = packet.worldSeed;
         worldSeedRandom = new System.Random(worldSeed.GetHashCode());
         Debug.Log("Set world seed packet: " + worldSeed);
+    }
+
+    public void HandlePacket(RequestInteractPacket packet)
+    {
+        CheckServerOnly(packet);
+
+        InteractPacket newPacket = new InteractPacket();
+        newPacket.actorNumber = packet.actorNumber;
+        newPacket.locationX = packet.locationX;
+        newPacket.locationY = packet.locationY;
+
+        SendPacket(newPacket, Photon.Realtime.ReceiverGroup.All);
+    }
+
+    public void HandlePacket(InteractPacket packet)
+    {
+        GamePlayerInfo playerInfo = GameManager.Instance.gameController.GetPlayerFromActorNumber(packet.actorNumber);
+        if (playerInfo == null)
+        {
+            Debug.LogError("Unable to get player: " + packet.actorNumber);
+            return;
+        }
+
+        TileInfo tileInfo = GameManager.Instance.gameController.tileManager.GetTileInfoInArraySafe(packet.locationX, packet.locationY);
+        if (tileInfo == null)
+        {
+            Debug.LogError("Unable to get tile info: " + packet.locationX + " " + packet.locationY);
+            return;
+        }
+
+        TiledGameObject tiledGameObject = tileInfo.tiledGameObject;
+        if (tiledGameObject == null)
+        {
+            Debug.LogError("Unable to get tiled gameobject: " + packet.locationX + " " + packet.locationY);
+            return;
+        }
+
+        tiledGameObject.DoInteract(playerInfo.controller);
     }
 
 

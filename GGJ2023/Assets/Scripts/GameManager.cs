@@ -8,7 +8,6 @@ public class GameManager : Singleton<GameManager>
     public StaticResourceManager resourceManager;
     public NetworkingManager networkingManager;
 
-    public Test_Connect connection;
 
     // Per-map game controller instance
     public GameController gameController{get; set;}
@@ -24,8 +23,6 @@ public class GameManager : Singleton<GameManager>
         }
 
         DontDestroyOnLoad(this.gameObject);
-
-        connection.Initialize();
     }
 
     void Start()

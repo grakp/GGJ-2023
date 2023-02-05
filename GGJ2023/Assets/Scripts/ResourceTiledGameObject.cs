@@ -22,16 +22,18 @@ public class ResourceTiledGameObject : TiledGameObject
 
     private int currentAmount = 0;
 
+
     void Start()
     {
         currentAmount = totalAmount;
     }
 
-    public override void Interact(PlayerController player)
+    public override void DoInteract(PlayerController player)
     {
         player.Give(resourceType, amountToGive);
 
         currentAmount -= amountToGive;
+
         if (hasLimit && currentAmount <= 0)
         {
             Destroy(this.gameObject);
