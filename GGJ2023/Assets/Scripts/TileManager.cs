@@ -54,6 +54,16 @@ public class TileSpawnParams
     public int numObjects = 10;
 };
 
+
+
+[System.Serializable]
+public class EnemySpawnParams
+{
+    public AiController enemyPrefab;
+    public int numObjects = 10;
+    public Vector2Int size = Vector2Int.one;
+};
+
 public class TileManager : MonoBehaviour
 {
     [SerializeField]
@@ -102,6 +112,10 @@ public class TileManager : MonoBehaviour
     private bool waterWalkStartRandomlyEachIteration = true;
 
     private List<Vector3> playerStartLocations = new List<Vector3>();
+
+    [Header("Enemies")]
+    [SerializeField]
+    private List<EnemySpawnParams> enemySpawnParams;
 
     void Update()
     {
@@ -320,6 +334,24 @@ public class TileManager : MonoBehaviour
             }
 
 
+        }
+
+        for (int i = 0; i < enemySpawnParams.Count; i++)
+        {
+            EnemySpawnParams spawnParams = enemySpawnParams[i];
+            for (int j = 0; j < spawnParams.numObjects; j++)
+            {
+                TileInfo randomLocation = GetRandomSpawnableLocation(spawnParams.size);
+                if (randomLocation == null)
+                {
+                    Debug.Log("Failed to spawn!");
+                    continue;
+                }
+
+                Vector3 worldPosition = GetWorldPositionOfTileInArray(randomLocation.positionInArray);
+                GameManager.Instance.gameController.SpawnEnemy(enemySpawnParams[i].enemyPrefab, worldPosition);
+            }
+           
         }
 
 
@@ -655,7 +687,8 @@ public class TileManager : MonoBehaviour
             for (int j = origin.y; j < width; j++)
             {
                 TileInfo info = tileInfos[i, j];
-                if (info.IsEmptyTile())
+
+                if (IsSpawnableLocation(new Vector2Int(i, j), new Vector2Int(1, 1)))
                 {
                     playerLocations.Add(info.positionInArray);
                 }
@@ -682,5 +715,54 @@ public class TileManager : MonoBehaviour
     public List<Vector3> GetPlayerStartLocations()
     {
         return playerStartLocations;
+    }
+
+    public TileInfo GetRandomSpawnableLocation(Vector2Int objectSize)
+    {
+        List<TileInfo> emptyTileList = cachedEmptyTiles.ToList();
+        emptyTileList.Shuffle(NetworkingManager.worldSeedRandom);
+
+        for (int i = 0; i < emptyTileList.Count; i++)
+        {
+            TileInfo tile = emptyTileList[i];
+            if (IsSpawnableLocation(tile.positionInArray, objectSize))
+            {
+                return tile;
+            }
+        }
+
+        return null;
+    }
+
+    public bool IsSpawnableLocation(Vector2Int positionInArray, Vector2Int objectSize)
+    {
+        if (positionInArray.x + objectSize.x >= width || positionInArray.y + objectSize.y >= height)
+        {
+            return false;
+        }
+
+        TileInfo info = GetTileInfoInArraySafe(positionInArray.x, positionInArray.y);
+        for (int i = 0; i < objectSize.x; i++)
+        {
+            for (int j = 0; j < objectSize.y; j++)
+            {
+                TileInfo tile = tileInfos[positionInArray.x + i, positionInArray.y + j];
+                if (!tile.IsEmptyTile())
+                {
+                    return false;
+                }
+            }
+        }
+
+        // Finally, do a collision check with already placed units on the map
+        Vector2 worldPosition = GetWorldPositionOfTileInArray(positionInArray);
+        Vector2 centeredPosition = worldPosition + new Vector2(objectSize.x / 2.0f, objectSize.y / 2.0f);
+        Collider2D collision = Physics2D.OverlapBox(worldPosition, objectSize, 0);
+        if (collision == null)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

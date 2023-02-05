@@ -38,13 +38,29 @@ public class AiTriggerStateController : MonoBehaviour // MonoBehaviourPun, IPunI
 
     void OnTriggerEnter2D(Collider2D other) {
         GameObject potentialTarget = other.gameObject;
-        if(potentialTarget.GetComponentInChildren<BaseUnit>().unitType == BaseUnit.UnitType.PLAYER) {
+        if (other.gameObject == null)
+        {
+            return;
+        }
+
+        BaseUnit unit = potentialTarget.GetComponentInChildren<BaseUnit>();
+        if (unit == null)
+        {
+            return;
+        }
+
+        if(unit.unitType == BaseUnit.UnitType.PLAYER) {
             _targetsInRange.Add(potentialTarget.GetInstanceID(), potentialTarget);
         }
     }
 
     void OnTriggerExit2D(Collider2D other) {
         GameObject potentialTarget = other.gameObject;
+        if (potentialTarget == null)
+        {
+            return;
+        }
+
         if(_targetsInRange.ContainsKey(potentialTarget.GetInstanceID())) {
             _targetsInRange.Remove(potentialTarget.GetInstanceID());
         }
