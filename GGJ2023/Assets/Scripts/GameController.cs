@@ -122,6 +122,8 @@ public class GameController : MonoBehaviour
         newInfo.controller.actorNumber = networkInfo.ActorNumber;
         newInfo.playerNetworkInfo = networkInfo;
 
+        newInfo.controller.SetPlayerName(networkInfo.NickName);
+
         if (player.photonView.IsMine)
         {
             // Always have the local player first
