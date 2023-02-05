@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 
@@ -17,6 +18,8 @@ public class ShopTiledGameObject : TiledGameObject
     public int numItems = 3; // only support 3 for now
     public List<ShopItemState> itemStates {get; set;}
     public ShopInstance shopInstance{get; set;}
+
+    public PlayerController shopOpener = null;
 
     public override void Initialize(TileInfo tileInfo)
     {
@@ -36,8 +39,15 @@ public class ShopTiledGameObject : TiledGameObject
 
     }
 
-    public override void Interact(PlayerController player)
+    public override void DoInteract(PlayerController player)
     {
+        if (!player.photonView.IsMine && !GameManager.Instance.networkingManager.IsDebuggingMode)
+        {
+            return;
+        }
+
+        shopOpener = player;
+        
         ShopkeeperUIParams shopParams = ConvertToUIParams();
         GetShopController().OpenShop(shopParams);
     }
@@ -79,6 +89,44 @@ public class ShopTiledGameObject : TiledGameObject
     public ShopItemInstance GetShopItemInstance(int index)
     {
         return itemStates[index].item;
+    }
+
+    public void BuyItemAtIndex(int index)
+    {
+        if (GameManager.Instance.networkingManager.IsDebuggingMode || PhotonNetwork.IsMasterClient)
+        {
+            DoBuyItemAtIndex(index, shopOpener);
+        }
+
+        ShopPurchasePacket packet = new ShopPurchasePacket();
+        packet.actorNumber = shopOpener.actorNumber;
+        packet.locationX = originTile.positionInArray.x;
+        packet.locationY = originTile.positionInArray.y;
+        packet.itemIndexToBuy = index;
+        
+        GameManager.Instance.networkingManager.SendRequestPacket(packet);
+    }
+
+    public void DoBuyItemAtIndex(int index, PlayerController buyer)
+    {
+        if (buyer == null)
+        {
+            return;
+        }
+
+        ShopItemInstance item = GetShopItemInstance(index);
+
+        buyer.Take(item.woodCost, item.waterCost, item.rockCost);
+        buyer.Give(item);
+        SetSold(index);
+
+        ShopkeeperUIController shopController = GetShopController();
+
+        if (shopController.IsTileUsingShop(this))
+        {
+            shopController.SetSoldOut(index);
+            shopController.UpdateItems();
+        }
     }
 
 

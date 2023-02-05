@@ -83,5 +83,6 @@ public class RoomListingsMenu : MonoBehaviourPunCallbacks
     {
         base.OnJoinedRoom();
         parentUI.SwitchToCurrentRoomMenu();
+        GameManager.Instance.OnConnectedToNetworkRoom();
     }
 }

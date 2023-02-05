@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceManager: {fileID: 1019820380}
   networkingManager: {fileID: 7186859170484931812}
+  connection: {fileID: 0}
 --- !u!114 &1019820380
 MonoBehaviour:
   m_ObjectHideFlags: 0

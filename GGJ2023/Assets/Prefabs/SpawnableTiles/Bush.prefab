@@ -123,6 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bd0bf1dfeb44094d91e08147a980f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCanvasText: {fileID: 0}
 --- !u!61 &1072721860721389248
 BoxCollider2D:
   m_ObjectHideFlags: 0

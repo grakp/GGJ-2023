@@ -27,93 +27,126 @@ public class GameController : MonoBehaviour
     {
         GameManager.Instance.gameController = this;
 
+        // If we haven't connected by now, we started in the game scene for debugging
+        if (!PhotonNetwork.IsConnected)
+        {
+            GameManager.Instance.networkingManager.SetDebuggingMode(true);
+        }
+
+        if (PhotonNetwork.IsConnected && PhotonNetwork.IsMasterClient)
+        {
+            SetWorldSeedPacket packet = new SetWorldSeedPacket();
+            packet.worldSeed = NetworkingManager.worldSeed;
+            GameManager.Instance.networkingManager.SendPacket(packet, Photon.Realtime.ReceiverGroup.Others);
+        }
+
+        if (GameManager.Instance.networkingManager.IsDebuggingMode || PhotonNetwork.IsMasterClient || GameManager.Instance.networkingManager.HasSetWorldSeed())
+        {
+            GenerateMap();
+            GeneratePlayer();
+        }
+        else
+        {
+            StartCoroutine(WaitForServerResponseAndInitialize());
+        }
+
+    }
+
+    private IEnumerator WaitForServerResponseAndInitialize()
+    {
+
+        while (!GameManager.Instance.networkingManager.HasSetWorldSeed())
+        {
+            yield return null;
+        }
+
         GenerateMap();
         GeneratePlayer();
     }
 
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void GenerateMap()
     {
-        if (!PhotonNetwork.IsConnected)
-        {
-            Debug.LogWarning("Photon is not connected. Map will not be replicated.");
-            mapGenerator.GenerateMap(tileManager.GenerateMap);
-        }
-        else
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                mapGenerator.GenerateMap(tileManager.GenerateMap);
-                // TODO: replicate
-            }
-            else
-            {
-                // TODO: Wait for replication of world seed
-                mapGenerator.GenerateMap(tileManager.GenerateMap);
-            }
-        }
+        mapGenerator.GenerateMap(tileManager.GenerateMap);
     }
 
     private void GeneratePlayer()
     {
         // Add the player info first because instnatiate callback is not null on callback
-        GamePlayerInfo newInfo = new GamePlayerInfo();
-        players.Add(newInfo);
-
         PlayerController player = null;
-        if (!PhotonNetwork.IsConnected)
+        if (GameManager.Instance.networkingManager.IsDebuggingMode)
         {
+            GamePlayerInfo newInfo = new GamePlayerInfo();
+
             GameObject playerObj = Instantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, Vector3.zero, Quaternion.identity);
             player = playerObj.GetComponent<PlayerController>();
+
+            newInfo.controller = player;
+            players.Add(newInfo);
+
         }
         else
         {
-
             int localActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
             Vector3 spawnLocation = Vector3.right * localActorNumber;
             GameObject prefab = GameManager.Instance.resourceManager.playerPrefab.gameObject;
             GameObject playerObj = NetworkingSingleton.NetworkInstantiate(prefab, spawnLocation, Quaternion.identity);
-            player = playerObj.GetComponent<PlayerController>();
-        }
-
-        if (player != null)
-        {
-            newInfo.controller = player;
-        }
-        else
-        {
-            Debug.LogError("Failed to instantiate player");
+            // Rest will be done in PlayerController
         }
     }
 
     public PlayerController GetMyPlayer()
     {
+        if (players.Count == 0)
+        {
+            return null;
+        }
+
         return players[0].controller;
     }
 
-    public void SetNetworkPlayerInfo(int index, Photon.Realtime.Player networkInfo)
+    public List<GamePlayerInfo> GetAllPlayers()
     {
-        players[index].playerNetworkInfo = networkInfo;
-    }
+        List<GamePlayerInfo> controllers = new List<GamePlayerInfo>();
+        for (int i = 0; i < players.Count; i++)
+        {
+            controllers.Add(players[i]);
+        }
 
-    public void AddRemotePlayer(PlayerController player, Photon.Realtime.Player networkInfo)
+        return controllers;
+    } 
+
+    public void AddPlayer(PlayerController player, Photon.Realtime.Player networkInfo)
     {
         GamePlayerInfo newInfo = new GamePlayerInfo();
         newInfo.controller = player;
+        newInfo.controller.actorNumber = networkInfo.ActorNumber;
         newInfo.playerNetworkInfo = networkInfo;
+
+        if (player.photonView.IsMine)
+        {
+            // Always have the local player first
+            players.Insert(0, newInfo);
+        }
+        else
+        {
+            players.Add(newInfo);
+        }
+
         players.Add(newInfo);
     }
 
+    public GamePlayerInfo GetPlayerFromActorNumber(int actorNumber)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].playerNetworkInfo != null && players[i].playerNetworkInfo.ActorNumber == actorNumber)
+            {
+                return players[i];
+            }
+        }
+
+        return null;
+    }
 
 }
 

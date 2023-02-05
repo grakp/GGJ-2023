@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
     public int amountWater{get; set;}
     public int amountRock{get; set;}
 
+    public int actorNumber{get; set;}
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +33,7 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
     // Update is called once per frame
     void Update()
     {
-        if (!PhotonNetwork.IsConnected || base.photonView.IsMine)
+        if (GameManager.Instance.networkingManager.IsDebuggingMode || base.photonView.IsMine)
         {
             inputHorizontal = Input.GetAxisRaw("Horizontal");
             inputVertical = Input.GetAxisRaw("Vertical");
@@ -81,7 +83,7 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
             TiledGameObject interactObject = interactionController.GetInteractObject();
             if (interactObject != null)
             {
-                interactObject.Interact(this);
+                interactObject.RequestInteract(this);
             }
         }
 
@@ -134,15 +136,7 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
             return;
         }
 
-        if (!base.photonView.IsMine)
-        {
-            // Add remote players
-            GameManager.Instance.gameController.AddRemotePlayer(this, info.Sender);
-        }
-        else
-        {
-            GameManager.Instance.gameController.SetNetworkPlayerInfo(0, info.Sender);
-        }
+        GameManager.Instance.gameController.AddPlayer(this, info.Sender);
 
         /*
 
