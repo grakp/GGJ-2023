@@ -23,7 +23,12 @@ public class GameController : MonoBehaviour
 
     public bool debug_SpawnInCenterOfMap = false;
 
-    
+    [Header("Enemies")]
+    [SerializeField]
+    private List<EnemySpawnParams> enemySpawnParams;
+
+    private List<AiController> enemies = new List<AiController>();
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -44,14 +49,20 @@ public class GameController : MonoBehaviour
 
         if (GameManager.Instance.networkingManager.IsDebuggingMode || PhotonNetwork.IsMasterClient || GameManager.Instance.networkingManager.HasSetWorldSeed())
         {
-            GenerateMap();
-            GeneratePlayer();
+            Initialize();
         }
         else
         {
             StartCoroutine(WaitForServerResponseAndInitialize());
         }
 
+    }
+
+    private void Initialize()
+    {
+        GenerateMap();
+        GeneratePlayer();
+        GenerateEnemies();
     }
 
     private IEnumerator WaitForServerResponseAndInitialize()
@@ -62,8 +73,7 @@ public class GameController : MonoBehaviour
             yield return null;
         }
 
-        GenerateMap();
-        GeneratePlayer();
+        Initialize();
     }
 
     public void GenerateMap()
@@ -170,11 +180,50 @@ public class GameController : MonoBehaviour
     {
         if (GameManager.Instance.networkingManager.IsDebuggingMode)
         {
-            Instantiate(enemyPrefab, spawnLocation, Quaternion.identity);
+            AiController enemy = Instantiate<AiController>(enemyPrefab, spawnLocation, Quaternion.identity);
         }
-        else
+        else if (PhotonNetwork.IsMasterClient)
         {
+            // Only the server creates enemies
             NetworkingSingleton.NetworkInstantiate(enemyPrefab.gameObject, spawnLocation, Quaternion.identity);
+        }
+    }
+
+    public void AddEnemy(AiController enemy)
+    {
+        enemies.Add(enemy);
+    }
+
+    public void ReleaseEnemy(AiController enemy)
+    {
+        if (enemies.Contains(enemy))
+        {
+            enemies.Remove(enemy);
+        }
+    }
+
+    private void GenerateEnemies()
+    {
+        if (!GameManager.Instance.networkingManager.IsDebuggingMode && !PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
+        for (int i = 0; i < enemySpawnParams.Count; i++)
+        {
+            EnemySpawnParams spawnParams = enemySpawnParams[i];
+            for (int j = 0; j < spawnParams.numObjects; j++)
+            {
+                TileInfo randomLocation = tileManager.GetRandomSpawnableLocation(spawnParams.size);
+                if (randomLocation == null)
+                {
+                    Debug.Log("Failed to spawn!");
+                    continue;
+                }
+
+                Vector3 worldPosition = tileManager.GetWorldPositionOfTileInArray(randomLocation.positionInArray);
+                SpawnEnemy(enemySpawnParams[i].enemyPrefab, worldPosition);
+            }
         }
     }
 

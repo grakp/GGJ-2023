@@ -50,6 +50,11 @@ MonoBehaviour:
   uiController: {fileID: 0}
   tileManager: {fileID: 19427948}
   mapGenerator: {fileID: 19427947}
+  debug_SpawnInCenterOfMap: 1
+  enemySpawnParams:
+  - enemyPrefab: {fileID: 3752945402656279126, guid: 43f6e880a516541938f6534485ee9c2d, type: 3}
+    numObjects: 10
+    size: {x: 1, y: 2}
 --- !u!114 &19427947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,7 +115,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 08c4a152103d3324eae6c201997e2061, type: 2}
   - {fileID: 11400000, guid: 3e44f01ba933df04fa72f220b8be8426, type: 2}
   alternativeGrassTileChance: 0.1
-  TestPrefab: {fileID: 9208667115135888686, guid: 7993a6720c219cd42b2829404834b581, type: 3}
   spawnParams:
   - tiledObjectPrefab: {fileID: 240168030, guid: 7993a6720c219cd42b2829404834b581, type: 3}
     numObjects: 10

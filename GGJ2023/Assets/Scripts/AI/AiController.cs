@@ -40,6 +40,14 @@ public class AiController : MonoBehaviour // MonoBehaviourPun, IPunInstantiateMa
         _coroutine = StartCoroutine(MoveState());
     }
 
+    void OnDestroy()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.gameController != null)
+        {
+            GameManager.Instance.gameController.ReleaseEnemy(this);
+        }
+    }
+
     void Update() {
         if(_current == AiState.MOVE) {
             GameObject potentialAggro = aggroStateController.GetClosestTargetInRange();

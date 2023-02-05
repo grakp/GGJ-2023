@@ -113,10 +113,6 @@ public class TileManager : MonoBehaviour
 
     private List<Vector3> playerStartLocations = new List<Vector3>();
 
-    [Header("Enemies")]
-    [SerializeField]
-    private List<EnemySpawnParams> enemySpawnParams;
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -336,23 +332,7 @@ public class TileManager : MonoBehaviour
 
         }
 
-        for (int i = 0; i < enemySpawnParams.Count; i++)
-        {
-            EnemySpawnParams spawnParams = enemySpawnParams[i];
-            for (int j = 0; j < spawnParams.numObjects; j++)
-            {
-                TileInfo randomLocation = GetRandomSpawnableLocation(spawnParams.size);
-                if (randomLocation == null)
-                {
-                    Debug.Log("Failed to spawn!");
-                    continue;
-                }
 
-                Vector3 worldPosition = GetWorldPositionOfTileInArray(randomLocation.positionInArray);
-                GameManager.Instance.gameController.SpawnEnemy(enemySpawnParams[i].enemyPrefab, worldPosition);
-            }
-           
-        }
 
 
         CalculatePlayerStartLocations();
