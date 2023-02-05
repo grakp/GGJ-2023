@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
 {
@@ -22,6 +23,8 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
     public int amountRock{get; set;}
 
     public int actorNumber{get; set;}
+
+    public TMP_Text playerName;
 
     // Start is called before the first frame update
     void Start()
@@ -145,6 +148,11 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
         {
             players.Add(controller);
         }*/
+    }
+
+    public void SetPlayerName(string name)
+    {
+        playerName.text = name;
     }
 
 }

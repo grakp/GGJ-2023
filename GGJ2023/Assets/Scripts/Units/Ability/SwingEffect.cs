@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class SwingEffect : Effect
@@ -53,4 +54,5 @@ public class SwingEffect : Effect
             enemyUnit.TakeDamage(GetDamage());
         }
     }
+
 }

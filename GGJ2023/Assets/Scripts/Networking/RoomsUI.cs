@@ -16,12 +16,14 @@ public class RoomsUI : MonoBehaviour
 
     public void SwitchToCreateRoomMenu()
     {
+        createRoomMenu.OnUsernameTextChanged();
         createRoomMenu.SetEnabled(true);
         currentRoomMenu.SetEnabled(false);
     }
 
     public void SwitchToCurrentRoomMenu()
     {
+        createRoomMenu.OnUsernameTextChanged();
         createRoomMenu.SetEnabled(false);
         currentRoomMenu.SetEnabled(true);
     }
