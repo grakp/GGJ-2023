@@ -67,21 +67,21 @@ public class SetWorldSeedPacket : PacketBase
     public int worldSeed;
 };
 
-
 [System.Serializable]
-public class RequestInteractPacket : PacketBase
+public class InteractPacket : PacketBase
 {
-    public const byte id = 3;
+    public const byte id = 4;
     public override byte packetId { get { return id; } protected set { packetId = value; }}
     public int actorNumber;
     public int locationX;
     public int locationY;
 };
 
+
 [System.Serializable]
-public class InteractPacket : PacketBase
+public class ShopPurchasePacket : PacketBase
 {
-    public const byte id = 4;
+    public const byte id = 5;
     public override byte packetId { get { return id; } protected set { packetId = value; }}
     public int actorNumber;
     public int locationX;
@@ -121,9 +121,7 @@ public class NetworkingManager : MonoBehaviour
 
         PhotonPeer.RegisterType(typeof(TestPacket), TestPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
         PhotonPeer.RegisterType(typeof(SetWorldSeedPacket), SetWorldSeedPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
-        PhotonPeer.RegisterType(typeof(RequestInteractPacket), RequestInteractPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
         PhotonPeer.RegisterType(typeof(InteractPacket), InteractPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
-
 
         PhotonNetwork.NetworkingClient.EventReceived += Network_OnEventReceived;
     
@@ -170,9 +168,6 @@ public class NetworkingManager : MonoBehaviour
                 break;
             case SetWorldSeedPacket.id:
                 HandlePacket((SetWorldSeedPacket)obj.CustomData);
-                break;
-            case RequestInteractPacket.id:
-                HandlePacket((RequestInteractPacket)obj.CustomData);
                 break;
             case InteractPacket.id:
                 HandlePacket((InteractPacket)obj.CustomData);
@@ -225,8 +220,19 @@ public class NetworkingManager : MonoBehaviour
 
     public void SendPacket(PacketBase packet, Photon.Realtime.ReceiverGroup receiver)
     {
+        if (!PhotonNetwork.IsConnected)
+        {
+            Debug.LogWarning("Photon was not connected when sending packet!");
+        }
+
         Photon.Realtime.RaiseEventOptions option = GetReceiverOptions(receiver);
         PhotonNetwork.RaiseEvent(packet.packetId, packet, option, ExitGames.Client.Photon.SendOptions.SendReliable);
+    }
+
+    public void SendRequestPacket(PacketBase packet)
+    {
+        Photon.Realtime.ReceiverGroup receiver = PhotonNetwork.IsMasterClient ? Photon.Realtime.ReceiverGroup.Others : Photon.Realtime.ReceiverGroup.MasterClient;
+        SendPacket(packet, receiver);
     }
 
     public void HandlePacket(TestPacket packet)
@@ -242,19 +248,20 @@ public class NetworkingManager : MonoBehaviour
         Debug.Log("Set world seed packet: " + worldSeed);
     }
 
-    public void HandlePacket(RequestInteractPacket packet)
+    public void HandlePacket(InteractPacket packet)
     {
-        CheckServerOnly(packet);
-
-        InteractPacket newPacket = new InteractPacket();
-        newPacket.actorNumber = packet.actorNumber;
-        newPacket.locationX = packet.locationX;
-        newPacket.locationY = packet.locationY;
-
-        SendPacket(newPacket, Photon.Realtime.ReceiverGroup.All);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            DoPacketAction(packet);
+            SendPacket(packet, Photon.Realtime.ReceiverGroup.Others);
+        }
+        else
+        {
+            DoPacketAction(packet);
+        }
     }
 
-    public void HandlePacket(InteractPacket packet)
+    public void DoPacketAction(InteractPacket packet)
     {
         GamePlayerInfo playerInfo = GameManager.Instance.gameController.GetPlayerFromActorNumber(packet.actorNumber);
         if (playerInfo == null)

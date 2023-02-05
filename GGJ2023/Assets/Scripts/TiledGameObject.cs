@@ -35,28 +35,16 @@ public class TiledGameObject : MonoBehaviour
 
     public virtual void RequestInteract(PlayerController player)
     {
-        if (GameManager.Instance.networkingManager.IsDebuggingMode)
+        if (GameManager.Instance.networkingManager.IsDebuggingMode || PhotonNetwork.IsMasterClient)
         {
             DoInteract(player);
         }
-        
-        else if (PhotonNetwork.IsMasterClient)
-        {
-            DoInteract(player);
-            InteractPacket interactPacket = new InteractPacket();
-            interactPacket.actorNumber = player.actorNumber;
-            interactPacket.locationX = originTile.positionInArray.x;
-            interactPacket.locationY = originTile.positionInArray.y;
-            GameManager.Instance.networkingManager.SendPacket(interactPacket, Photon.Realtime.ReceiverGroup.Others);
-        }
-        else
-        {
-            RequestInteractPacket interactPacket = new RequestInteractPacket();
-            interactPacket.actorNumber = player.actorNumber;
-            interactPacket.locationX = originTile.positionInArray.x;
-            interactPacket.locationY = originTile.positionInArray.y;
-            GameManager.Instance.networkingManager.SendPacket(interactPacket, Photon.Realtime.ReceiverGroup.MasterClient);
-        }
+
+        InteractPacket interactPacket = new InteractPacket();
+        interactPacket.actorNumber = player.actorNumber;
+        interactPacket.locationX = originTile.positionInArray.x;
+        interactPacket.locationY = originTile.positionInArray.y;
+        GameManager.Instance.networkingManager.SendRequestPacket(interactPacket);
     }
 
     public virtual void DoInteract(PlayerController player)
