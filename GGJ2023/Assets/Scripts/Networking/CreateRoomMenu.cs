@@ -45,6 +45,8 @@ public class CreateRoomMenu : MonoBehaviourPunCallbacks
 
         Debug.Log("Created room successfully!");
         cachedParentUI.SwitchToCurrentRoomMenu();
+
+
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)

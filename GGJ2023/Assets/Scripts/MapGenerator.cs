@@ -498,10 +498,15 @@ public class MapGenerator : MonoBehaviour {
 
         System.Random pseudoRandom = new System.Random(seed.GetHashCode());
 
-         if (Photon.Pun.PhotonNetwork.IsConnected)
-         {
-            pseudoRandom = NetworkingManager.worldSeedRandom;
-         }
+        if (Photon.Pun.PhotonNetwork.IsConnected)
+        {
+           pseudoRandom = NetworkingManager.worldSeedRandom;
+        }
+
+        if (pseudoRandom == null)
+        {
+           Debug.LogError("Random seed not initialized properly: Psuedorandom null Error!");
+        }
 
         for (int x = 0; x < width; x ++) {
             for (int y = 0; y < height; y ++) {
