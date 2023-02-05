@@ -8,6 +8,11 @@ using Photon.Realtime;
 public class Test_Connect : MonoBehaviourPunCallbacks
 {
 
+    void Start()
+    {
+        Initialize();
+    }
+
     public void Initialize()
     {
         Debug.Log("Connecting to server");
