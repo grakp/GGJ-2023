@@ -46,7 +46,7 @@ public class ShopkeeperUIController : MonoBehaviour
                 break;
             }
 
-            shopKeeperUIOptions[i].Initialize(shopParams.itemParams[i], this);
+            shopKeeperUIOptions[i].Initialize(i, shopParams.itemParams[i], this);
         }
     }
 
@@ -67,5 +67,10 @@ public class ShopkeeperUIController : MonoBehaviour
         {
             shopKeeperUIOptions[i].UpdateAffordability();
         }
+    }
+
+    public void SetSoldOut(int index)
+    {
+        shopKeeperUIOptions[index].SwitchToSoldOut();
     }
 }

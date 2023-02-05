@@ -270,6 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e64028b024d20b41bf370dcd223939f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCanvasText: {fileID: 0}
   resourceType: 1
   amountToGive: 1
   totalAmount: 1
