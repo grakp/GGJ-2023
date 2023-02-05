@@ -109,7 +109,7 @@ public class NetworkingManager : MonoBehaviour
             return;
         }
 
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsMasterClient || IsDebuggingMode)
         {
             worldSeed = Time.time.ToString().GetHashCode();
             worldSeedRandom = new System.Random(worldSeed.GetHashCode());
