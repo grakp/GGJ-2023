@@ -6,12 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Networking/atu_NetworkingTest.unity
+    path: Assets/Scenes/LobbyScene.unity
     guid: 64aeeb27dfc8a744a80c210a80fee2ee
   - enabled: 1
-    path: Assets/Scenes/Networking/atu_NetworkingTestGameScene.unity
-    guid: 817947bf28e0eaf4abbe2940d7d96530
-  - enabled: 1
-    path: Assets/Scenes/atu_TestScene.unity
-    guid: 97545176a22305e4bae931686b9305d1
+    path: Assets/Scenes/Game.unity
+    guid: e962c6c26ab0cf444800eef7de0df1f1
   m_configObjects: {}

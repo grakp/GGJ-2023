@@ -1571,6 +1571,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e50aa697eec8d5b489c098a2470f7c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  createRoomMenu: {fileID: 0}
   parentUI: {fileID: 1058179261}
   content: {fileID: 1868134718}
   roomListing: {fileID: 7432174671951493976, guid: f1a2af9957f373a4285ba04d2f6eee5c, type: 3}
@@ -1606,7 +1607,7 @@ MonoBehaviour:
   playerListing: {fileID: 6590116719028094239, guid: 442b7fdb1ef6cfc4f86fbc625a83b420, type: 3}
   isEnabled: 0
   joinRoomButton: {fileID: 240390007}
-  sceneNameToMoveTo: atu_TestScene
+  sceneNameToMoveTo: Game
 --- !u!1 &568450193
 GameObject:
   m_ObjectHideFlags: 0
@@ -4148,6 +4149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e50aa697eec8d5b489c098a2470f7c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  createRoomMenu: {fileID: 0}
   parentUI: {fileID: 1058179261}
   content: {fileID: 914788133}
   roomListing: {fileID: 7432174671951493976, guid: f1a2af9957f373a4285ba04d2f6eee5c, type: 3}
