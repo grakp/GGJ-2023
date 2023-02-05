@@ -13,6 +13,40 @@ using UnityEngine;
 public abstract class PacketBase
 {
     public abstract byte packetId { get; protected set; }
+
+    // Convert an object to a byte array
+    public static byte[] ObjectToByteArray(object obj)
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        using (var ms = new MemoryStream())
+        {
+            bf.Serialize(ms, obj);
+            return ms.ToArray();
+        }
+    }
+
+    // Convert a byte array to an Object
+    public static object ByteArrayToObject(byte[] arrBytes)
+    {
+        using (var memStream = new MemoryStream())
+        {
+            var binForm = new BinaryFormatter();
+            memStream.Write(arrBytes, 0, arrBytes.Length);
+            memStream.Seek(0, SeekOrigin.Begin);
+            var obj = binForm.Deserialize(memStream);
+            return obj;
+        }
+    }
+
+    public static byte[] Serialize(object customType)
+    {
+        return ObjectToByteArray(customType);
+    }
+
+    public static object Deserialize(byte[] data)
+    {
+        return ByteArrayToObject(data);
+    }
 };
 
 [System.Serializable]
@@ -21,100 +55,12 @@ public class TestPacket : PacketBase
     public static byte id = 1;
     public override byte packetId { get { return id; } protected set { packetId = value; }}
 
-    private int magicNumber = 123;
-    private string testString = "Asd";
-
-    public static byte[] Serialize(object customType)
-    {
-        /*
-        TestPacket data = (TestPacket)customType;
-        
-        List<byte[]> byteArrays = new List<byte[]>();
-
-        {
-            byte[] bytes = BitConverter.GetBytes(data.magicNumber);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(bytes);
-            }
-
-            byteArrays.Add(bytes);
-        }
-
-        {
-            byte[] bytes = BitConverter.GetBytes(data.testString.Length);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(bytes);
-            }
-
-            byteArrays.Add(bytes);
-        }
-
-        {
-            byte[] bytes = System.Text.Encoding.ASCII.GetBytes(data.testString);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(bytes);
-            }
-
-            byteArrays.Add(bytes);
-        }
-
-        byte [] result = NetworkingManager.JoinBytes(byteArrays.ToArray());
-        return result;
-        */
-        return NetworkingManager.ObjectToByteArray(customType);
-    }
-
-    public static object Deserialize(byte[] data)
-    {
-        /*
-        TestPacket packet = new TestPacket();
-        int runningOffset = 0;
-        NetworkingManager.Deserialize_Int(data, ref runningOffset, ref packet.magicNumber);
-        NetworkingManager.Deserialize_String(data, ref runningOffset, ref packet.testString);
-
-        return packet;
-        */
-        return NetworkingManager.ByteArrayToObject(data);
-    }
+    public int magicNumber = 123;
+    public string testString = "Asd";
 };
 
 public class NetworkingManager : MonoBehaviour
 {
-
-    public static void Deserialize_Int(byte[] data, ref int offset, ref int result)
-    {
-        int size = sizeof(int);
-        byte[] bytes = new byte[size];
-        Array.Copy(data, offset, bytes, 0, bytes.Length);
-        if (BitConverter.IsLittleEndian)
-        {
-            Array.Reverse(bytes);
-        }
-
-        result = BitConverter.ToInt32(bytes, 0);
-        offset += size;
-    }
-
-    public static void Deserialize_String(byte[] data, ref int offset, ref string result)
-    {
-        int size = 0;
-        NetworkingManager.Deserialize_Int(data, ref offset, ref size);
-
-        byte[] bytes = new byte[size];
-        Array.Copy(data, offset, bytes, 0, bytes.Length);
-        if (BitConverter.IsLittleEndian)
-        {
-            Array.Reverse(bytes);
-        }
-
-        result = System.Text.Encoding.UTF8.GetString(bytes);
-        offset += size;
-    }
-
-
     public static int worldSeed = -1;
     public static System.Random worldSeedRandom;
 
@@ -146,7 +92,7 @@ public class NetworkingManager : MonoBehaviour
             PhotonNetwork.NetworkingClient.EventReceived += Network_OnEventReceived;
 
             TestPacket testPacket = new TestPacket();
-            SendPacket(testPacket, Photon.Realtime.ReceiverGroup.Others);
+            SendPacket(testPacket, Photon.Realtime.ReceiverGroup.All);
         }
     }
 
@@ -163,8 +109,6 @@ public class NetworkingManager : MonoBehaviour
         }
 
         System.Type dataType = obj.CustomData.GetType();
-        Debug.Log("Data type: " + dataType);
-
         if (obj.Code == TestPacket.id)
         {
             HandlePacket((TestPacket)obj.CustomData);
@@ -220,7 +164,7 @@ public class NetworkingManager : MonoBehaviour
 
     public void HandlePacket(TestPacket packet)
     {
-        Debug.Log("Hey, a packet!!!");
+        Debug.Log("Hey, a packet!!!: " + packet.magicNumber + " " + packet.testString);
     }
 
     public void CheckServerOnly(PacketBase packet)
@@ -252,29 +196,6 @@ public class NetworkingManager : MonoBehaviour
         return rv;
     }
 
-// Convert an object to a byte array
-public static byte[] ObjectToByteArray(object obj)
-{
-    BinaryFormatter bf = new BinaryFormatter();
-    using (var ms = new MemoryStream())
-    {
-        bf.Serialize(ms, obj);
-        return ms.ToArray();
-    }
-}
-
-// Convert a byte array to an Object
-public static object ByteArrayToObject(byte[] arrBytes)
-{
-    using (var memStream = new MemoryStream())
-    {
-        var binForm = new BinaryFormatter();
-        memStream.Write(arrBytes, 0, arrBytes.Length);
-        memStream.Seek(0, SeekOrigin.Begin);
-        var obj = binForm.Deserialize(memStream);
-        return obj;
-    }
-}
 
 
 }
