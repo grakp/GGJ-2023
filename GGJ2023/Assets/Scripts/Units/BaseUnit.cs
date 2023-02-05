@@ -25,6 +25,16 @@ public class BaseUnit : MonoBehaviour
         dir = newDir;
     }
 
+    public Ability GetAbilityWithName(string name)
+    {
+        if (!_abilitiesMap.ContainsKey(name))
+        {
+            return null;
+        }
+
+        return _abilitiesMap[name];
+    }
+
     public bool UseAbility(string name) {
         if(_abilitiesMap.ContainsKey(name) && !_isUsingAbility) {
             if(!_abilityOnCooldownsMap[name]) {

@@ -157,6 +157,7 @@ GameObject:
   m_Component:
   - component: {fileID: 720084876771464246}
   - component: {fileID: 3661183504692788254}
+  - component: {fileID: 9210432477143359249}
   m_Layer: 3
   m_Name: Swing
   m_TagString: Untagged
@@ -192,9 +193,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 061ff0c48e882498fa173cefbaaaf341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  instigator: {fileID: 0}
-  target: {fileID: 0}
   durationSec: 0.5
+--- !u!114 &9210432477143359249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720084876771464240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &720084876788243351
 GameObject:
   m_ObjectHideFlags: 0
