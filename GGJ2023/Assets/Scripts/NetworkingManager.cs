@@ -52,49 +52,78 @@ public abstract class PacketBase
 [System.Serializable]
 public class TestPacket : PacketBase
 {
-    public static byte id = 1;
+    public const byte id = 1;
     public override byte packetId { get { return id; } protected set { packetId = value; }}
 
     public int magicNumber = 123;
     public string testString = "Asd";
 };
 
+[System.Serializable]
+public class SetWorldSeedPacket : PacketBase
+{
+    public const byte id = 2;
+    public override byte packetId { get { return id; } protected set { packetId = value; }}
+    public int worldSeed;
+};
+
 public class NetworkingManager : MonoBehaviour
 {
     public static int worldSeed = -1;
-    public static System.Random worldSeedRandom;
+    public static System.Random worldSeedRandom = null;
 
     private Photon.Realtime.RaiseEventOptions sendToMasterClientOptions = new Photon.Realtime.RaiseEventOptions();
     private Photon.Realtime.RaiseEventOptions sendToAllOptions = new Photon.Realtime.RaiseEventOptions();
     private Photon.Realtime.RaiseEventOptions sendToOtherOptions = new Photon.Realtime.RaiseEventOptions();
 
+    public bool IsDebuggingMode {get; private set;}
+
+    private bool hasInitialized = false;
+
     public void Initialize()
     {
-        if (PhotonNetwork.IsMasterClient || !PhotonNetwork.IsConnected)
+        if (hasInitialized)
+        {
+            return;
+        }
+
+        if (PhotonNetwork.IsMasterClient)
         {
             worldSeed = Time.time.ToString().GetHashCode();
             worldSeedRandom = new System.Random(worldSeed.GetHashCode());
-
-            if (!PhotonNetwork.IsConnected)
-            {
-                Debug.Log("Network is not connected. World seed will not be replicated");
-            }
         }
 
-        if (PhotonNetwork.IsConnected)
+        sendToMasterClientOptions.Receivers = Photon.Realtime.ReceiverGroup.MasterClient;
+        sendToAllOptions.Receivers = Photon.Realtime.ReceiverGroup.All;
+        sendToOtherOptions.Receivers = Photon.Realtime.ReceiverGroup.Others;
+
+        PhotonPeer.RegisterType(typeof(TestPacket), TestPacket.id, TestPacket.Serialize, TestPacket.Deserialize);
+        PhotonPeer.RegisterType(typeof(SetWorldSeedPacket), SetWorldSeedPacket.id, SetWorldSeedPacket.Serialize, SetWorldSeedPacket.Deserialize);
+
+        PhotonNetwork.NetworkingClient.EventReceived += Network_OnEventReceived;
+
+    
+        TestPacket testPacket = new TestPacket();
+        SendPacket(testPacket, Photon.Realtime.ReceiverGroup.All);
+
+        hasInitialized = true;
+    }
+
+    public void SetDebuggingMode(bool set)
+    {
+        IsDebuggingMode = set;
+        if (set == true && !hasInitialized)
         {
-            sendToMasterClientOptions.Receivers = Photon.Realtime.ReceiverGroup.MasterClient;
-            sendToAllOptions.Receivers = Photon.Realtime.ReceiverGroup.All;
-            sendToOtherOptions.Receivers = Photon.Realtime.ReceiverGroup.Others;
-
-            PhotonPeer.RegisterType(typeof(TestPacket), TestPacket.id, TestPacket.Serialize, TestPacket.Deserialize);
-
-            PhotonNetwork.NetworkingClient.EventReceived += Network_OnEventReceived;
-
-            TestPacket testPacket = new TestPacket();
-            SendPacket(testPacket, Photon.Realtime.ReceiverGroup.All);
+            Debug.Log("Testing game without network. World seed will not be replicated");
+            Initialize();
         }
     }
+
+    public bool HasSetWorldSeed()
+    {
+        return worldSeed != -1 && worldSeedRandom != null;
+    }
+
 
     public void OnDestroy()
     {
@@ -109,13 +138,21 @@ public class NetworkingManager : MonoBehaviour
         }
 
         System.Type dataType = obj.CustomData.GetType();
-        if (obj.Code == TestPacket.id)
+        switch (obj.Code)
         {
-            HandlePacket((TestPacket)obj.CustomData);
-        }
-        else if (dataType.IsSubclassOf(typeof(PacketBase)))
-        {
-            Debug.LogWarning("Unhandled event: " + obj.Code + " " + dataType);
+            case TestPacket.id:
+                HandlePacket((TestPacket)obj.CustomData);
+                Debug.Log("Sender: " + obj.Sender.ToString());
+                break;
+            case SetWorldSeedPacket.id:
+                HandlePacket((SetWorldSeedPacket)obj.CustomData);
+                break;
+            default:
+                if (dataType.IsSubclassOf(typeof(PacketBase)))
+                {
+                    Debug.LogError("Unhandled event: " + obj.Code + " " + dataType);
+                }
+                break;
         }
     }
 
@@ -166,6 +203,15 @@ public class NetworkingManager : MonoBehaviour
     {
         Debug.Log("Hey, a packet!!!: " + packet.magicNumber + " " + packet.testString);
     }
+
+    public void HandlePacket(SetWorldSeedPacket packet)
+    {
+        CheckClientOnly(packet);
+        worldSeed = packet.worldSeed;
+        worldSeedRandom = new System.Random(worldSeed.GetHashCode());
+        Debug.Log("Set world seed packet: " + worldSeed);
+    }
+
 
     public void CheckServerOnly(PacketBase packet)
     {

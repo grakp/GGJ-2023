@@ -15,7 +15,30 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
+        PlayerController player = GameManager.Instance.gameController.GetMyPlayer();
+        if (player == null)
+        {
+            StartCoroutine(WaitForPlayer());
+        }
+        else
+        {
+            Initialize();
+        }
+    }
+
+    void Initialize()
+    {
         target = GameManager.Instance.gameController.GetMyPlayer().transform;
+    }
+
+    private IEnumerator WaitForPlayer()
+    {
+        while (GameManager.Instance.gameController.GetMyPlayer() == null)
+        {
+            yield return null;
+        }
+
+        Initialize();
     }
 
     // Update is called once per frame

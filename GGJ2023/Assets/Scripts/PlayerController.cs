@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
     // Update is called once per frame
     void Update()
     {
-        if (!PhotonNetwork.IsConnected || base.photonView.IsMine)
+        if (GameManager.Instance.networkingManager.IsDebuggingMode || base.photonView.IsMine)
         {
             inputHorizontal = Input.GetAxisRaw("Horizontal");
             inputVertical = Input.GetAxisRaw("Vertical");
@@ -134,15 +134,7 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
             return;
         }
 
-        if (!base.photonView.IsMine)
-        {
-            // Add remote players
-            GameManager.Instance.gameController.AddRemotePlayer(this, info.Sender);
-        }
-        else
-        {
-            GameManager.Instance.gameController.SetNetworkPlayerInfo(0, info.Sender);
-        }
+        GameManager.Instance.gameController.AddPlayer(this, info.Sender);
 
         /*
 

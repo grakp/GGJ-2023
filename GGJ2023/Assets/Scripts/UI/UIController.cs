@@ -21,6 +21,20 @@ public class UIController : MonoBehaviour
     void Start()
     {
         player = GameManager.Instance.gameController.GetMyPlayer();
+        if (player == null)
+        {
+            StartCoroutine(WaitForPlayer());
+        }
+        else
+        {
+            Initialize();
+        }
+
+    }
+
+    void Initialize()
+    {
+        player = GameManager.Instance.gameController.GetMyPlayer();
         playerBaseUnit = player.GetComponent<BaseUnit>();
         // Should probably have max health later...
         playerHealthSlider.maxValue = playerBaseUnit.health;
@@ -38,5 +52,15 @@ public class UIController : MonoBehaviour
         woodResourceText.text = player.amountWood.ToString();
         waterResourceText.text = player.amountWater.ToString();
         stoneResourceText.text = player.amountRock.ToString();
+    }
+
+    private IEnumerator WaitForPlayer()
+    {
+        while (GameManager.Instance.gameController.GetMyPlayer() == null)
+        {
+            yield return null;
+        }
+
+        Initialize();
     }
 }
