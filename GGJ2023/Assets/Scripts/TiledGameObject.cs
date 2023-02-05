@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Tilemaps;
 
 public class TiledGameObject : MonoBehaviour
 {
@@ -10,6 +11,16 @@ public class TiledGameObject : MonoBehaviour
     public TMP_Text debugCanvasText;
 
     protected TileInfo originTile = null;
+
+    [Header("Corners")]
+
+    [SerializeField]
+    private List<TileBase> cornerSprites;
+
+    [SerializeField]
+    bool useCornerTiles = false;
+    [SerializeField]
+    protected Tilemap tilemap;
 
     void OnDestroy()
     {
@@ -31,6 +42,14 @@ public class TiledGameObject : MonoBehaviour
         {
             debugCanvasText.text = originTile.positionInArray.x + ", " + originTile.positionInArray.y;
         }
+
+        if (useCornerTiles && cornerSprites.Count > 0)
+        {
+            int tileCorner = GetTileIndexFromCorner(originTile.corners);
+            TileBase tileSprite = cornerSprites[tileCorner];
+            PaintTile(tileSprite, originTile.cellPosition);
+        }
+
     }
 
     public virtual void RequestInteract(PlayerController player)
@@ -55,4 +74,37 @@ public class TiledGameObject : MonoBehaviour
     public virtual void UnInteract()
     {
     }
+
+    protected void PaintTile(TileBase tile, Vector2Int position)
+    {
+        var tilePosition = tilemap.WorldToCell((Vector3Int)position);
+        tilemap.SetTile(tilePosition, tile);
+    }
+
+    protected int GetTileIndexFromCorner(int corner)
+    {
+        int total = 0;
+        if ((corner & 0x1000) != 0)
+        {
+            total += 8;
+        }
+
+        if ((corner & 0x0100) != 0)
+        {
+            total += 4;
+        }
+
+        if ((corner & 0x0010) != 0)
+        {
+            total += 2;
+        }
+
+        if ((corner & 0x0001) != 0)
+        {
+            total += 1;
+        }
+
+        return total;
+    }
+
 }

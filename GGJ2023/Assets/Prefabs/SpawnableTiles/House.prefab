@@ -105,6 +105,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugCanvasText: {fileID: 0}
+  cornerSprites: []
+  useCornerTiles: 0
+  tilemap: {fileID: 0}
   numItems: 3
   shopOpener: {fileID: 0}
 --- !u!1 &5576198282861036999

@@ -271,6 +271,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugCanvasText: {fileID: 0}
+  cornerSprites: []
+  useCornerTiles: 0
+  tilemap: {fileID: 0}
   resourceType: 1
   amountToGive: 1
   totalAmount: 1

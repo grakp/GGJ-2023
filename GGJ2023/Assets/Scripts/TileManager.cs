@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Linq;
+using Photon.Realtime;
 
 public enum TileType
 {
@@ -78,9 +79,6 @@ public class TileManager : MonoBehaviour
     private HashSet<TileInfo> cachedEmptyTiles = new HashSet<TileInfo>();
 
     [SerializeField]
-    private TiledGameObject TestPrefab;
-
-    [SerializeField]
     private List<TileSpawnParams> spawnParams;
 
     [SerializeField]
@@ -103,6 +101,7 @@ public class TileManager : MonoBehaviour
     [SerializeField]
     private bool waterWalkStartRandomlyEachIteration = true;
 
+    private List<Vector3> playerStartLocations = new List<Vector3>();
 
     void Update()
     {
@@ -218,7 +217,7 @@ public class TileManager : MonoBehaviour
         // Water will be spawned like an object, but it has a special algorthm, so do it first
         {
 
-
+            HashSet<Vector2Int> waterTileLocations = new HashSet<Vector2Int>();
 
             for (int i = 0; i < numRivers; i++)
             {
@@ -240,8 +239,42 @@ public class TileManager : MonoBehaviour
                     tile = tileInfos[riverTile.x, riverTile.y];
                     newObject.Initialize(tile);
                     SetTileInUse(newObject, tile);
+
+                    waterTileLocations.Add(tile.positionInArray);
                 }
             }
+
+            // Set water tile corners
+            foreach (Vector2Int waterLocation in waterTileLocations)
+            {
+                Vector2Int arrayPosition = waterLocation;
+                TileInfo tile = tileInfos[arrayPosition.x, arrayPosition.y];
+
+                Vector2Int upPosition = waterLocation + Vector2Int.up;
+                if (!waterTileLocations.Contains(upPosition))
+                {
+                    tile.corners |= 0x1000;
+                }
+
+                Vector2Int rightPosition = waterLocation + Vector2Int.right;
+                if (!waterTileLocations.Contains(rightPosition))
+                {
+                    tile.corners |= 0x0100;
+                }
+
+                Vector2Int downPosition = waterLocation + Vector2Int.down;
+                if (!waterTileLocations.Contains(downPosition))
+                {
+                    tile.corners |= 0x0010;
+                }
+
+                Vector2Int leftPosition = waterLocation + Vector2Int.left;
+                if (!waterTileLocations.Contains(leftPosition))
+                {
+                    tile.corners |= 0x0001;
+                }
+            }
+
         }
         
         foreach (TileSpawnParams param in spawnParams)
@@ -289,6 +322,8 @@ public class TileManager : MonoBehaviour
 
         }
 
+
+        CalculatePlayerStartLocations();
         //cachedEmptyTiles = new HashSet<TileInfo>(emptyTileList);
     }
 
@@ -582,4 +617,70 @@ public class TileManager : MonoBehaviour
         return path;
     }
 
+    public TileInfo GetRandomEmptyLocation()
+    {
+        List<TileInfo> emptyTileList = cachedEmptyTiles.ToList();
+
+        int index = NetworkingManager.RandomRangeUsingWorldSeed(0, cachedEmptyTiles.Count);
+        return emptyTileList[index];
+    }
+
+
+    public void CalculatePlayerStartLocations()
+    {
+        TileInfo randomSpot = GetRandomEmptyLocation();
+        if (randomSpot == null)
+        {
+            return;
+        }
+
+        if (GameManager.Instance.networkingManager.IsDebuggingMode)
+        {
+            playerStartLocations.Add(GetWorldPositionOfTileInArray(randomSpot.positionInArray));
+            return;
+        }
+
+        Vector2Int origin = randomSpot.positionInArray;
+
+        // Note: Actor Ids start at 1
+        int numPlayers = Photon.Pun.PhotonNetwork.CurrentRoom.Players.Count;
+        if (numPlayers == 0)
+        {
+            return;
+        }
+
+        List<Vector2Int> playerLocations = new List<Vector2Int>();
+        for (int i = origin.x; i < width; i++)
+        {
+            for (int j = origin.y; j < width; j++)
+            {
+                TileInfo info = tileInfos[i, j];
+                if (info.IsEmptyTile())
+                {
+                    playerLocations.Add(info.positionInArray);
+                }
+
+                if (playerLocations.Count >= numPlayers)
+                {
+                    break;
+                }
+            }
+
+            if (playerLocations.Count >= numPlayers)
+            {
+                break;
+            }
+        }
+        
+        for (int i = 0; i < numPlayers; i++)
+        {
+            Vector2Int location = playerLocations[i];
+            playerStartLocations.Add(GetWorldPositionOfTileInArray(location));
+        }
+    }
+
+    public List<Vector3> GetPlayerStartLocations()
+    {
+        return playerStartLocations;
+    }
 }
