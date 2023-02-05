@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class ShopkeeperUIItemParams
 {
@@ -50,8 +51,11 @@ public class ShopkeeperUIItemOption : MonoBehaviour
     private ShopkeeperUIItemParams cachedShopParams;
     private ShopkeeperUIController cachedParentController;
 
-    public void Initialize(ShopkeeperUIItemParams shopParams, ShopkeeperUIController parentController)
+    private int index;
+
+    public void Initialize(int index, ShopkeeperUIItemParams shopParams, ShopkeeperUIController parentController)
     {
+        this.index = index;
         cachedShopParams = shopParams;
         cachedParentController = parentController;
         woodText.text = shopParams.numWood.ToString();
@@ -114,15 +118,8 @@ public class ShopkeeperUIItemOption : MonoBehaviour
     {
         if (CanAfford())
         {
-            PlayerController player = GetPlayerController();
-            player.Take(cachedShopParams.numWood, cachedShopParams.numWater, cachedShopParams.numRock);
-
             ShopTiledGameObject tileObject = cachedParentController.GetTileObject();
-
-            player.Give(tileObject.GetShopItemInstance(cachedShopParams.index));
-            tileObject.SetSold(cachedShopParams.index);
-            SwitchToSoldOut();
-            cachedParentController.UpdateItems();
+            tileObject.BuyItemAtIndex(index);
         }
     }
 

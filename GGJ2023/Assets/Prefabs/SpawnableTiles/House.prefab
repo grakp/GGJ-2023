@@ -104,7 +104,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b1b3d05f79a23419b88c1133a73543, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugCanvasText: {fileID: 0}
   numItems: 3
+  shopOpener: {fileID: 0}
 --- !u!1 &5576198282861036999
 GameObject:
   m_ObjectHideFlags: 0
