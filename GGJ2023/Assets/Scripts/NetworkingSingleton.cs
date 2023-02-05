@@ -42,7 +42,7 @@ public class NetworkingSingleton : SingletonScriptableObject<NetworkingSingleton
 {
     public List<NetworkedPrefab> networkedPrefabs;
 
-    public static GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation)
+    public static GameObject NetworkInstantiate(GameObject obj, Vector3 position, Quaternion rotation, object[] initializationData = null)
     {
         foreach (NetworkedPrefab networkedPrefab in NetworkingSingleton.Instance.networkedPrefabs)
         {
@@ -50,7 +50,7 @@ public class NetworkingSingleton : SingletonScriptableObject<NetworkingSingleton
             {
                 if (networkedPrefab.path != string.Empty)
                 {
-                    GameObject result = PhotonNetwork.Instantiate(networkedPrefab.path, position, rotation);
+                    GameObject result = PhotonNetwork.Instantiate(networkedPrefab.path, position, rotation, 0, initializationData);
                     return result;
                 }
                 else
