@@ -757,12 +757,20 @@ public class TileManager : MonoBehaviour
         // Finally, do a collision check with already placed units on the map
         Vector2 worldPosition = GetWorldPositionOfTileInArray(positionInArray);
         Vector2 centeredPosition = worldPosition + new Vector2(objectSize.x / 2.0f, objectSize.y / 2.0f);
-        Collider2D collision = Physics2D.OverlapBox(worldPosition, objectSize, 0);
-        if (collision == null)
+        Collider2D[] collisions = Physics2D.OverlapBoxAll(centeredPosition, objectSize, 0);
+        if (collisions == null || collisions.Length == 0)
         {
             return true;
         }
 
-        return false;
+        for (int i = 0; i < collisions.Length; i++)
+        {
+            if (!collisions[i].isTrigger)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
