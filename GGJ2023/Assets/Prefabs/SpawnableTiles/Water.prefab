@@ -150,6 +150,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugCanvasText: {fileID: 0}
+  cornerSprites:
+  - {fileID: 11400000, guid: 04f24c708c4cb4c4d8dc4436965a8d43, type: 2}
+  - {fileID: 11400000, guid: 9f910bfc17181924b927387d1a9441a9, type: 2}
+  - {fileID: 11400000, guid: 647cd4f2afed57d4c8898d56509d7b55, type: 2}
+  - {fileID: 11400000, guid: 7fac52ad8bedf61468e28f358e4601ac, type: 2}
+  - {fileID: 11400000, guid: ecaec8dac4a828446a2c9567858b90a1, type: 2}
+  - {fileID: 11400000, guid: ba87cf1abdec59147984f1c5d047f404, type: 2}
+  - {fileID: 11400000, guid: 7d0c43e1600bace48babcd1399e1f937, type: 2}
+  - {fileID: 11400000, guid: 7706833d0a039d94496e4f7b3ea6c37e, type: 2}
+  - {fileID: 11400000, guid: ba87cf1abdec59147984f1c5d047f404, type: 2}
+  - {fileID: 11400000, guid: a048eaf169476dd47bdcbefc7809abd6, type: 2}
+  - {fileID: 11400000, guid: 7706833d0a039d94496e4f7b3ea6c37e, type: 2}
+  - {fileID: 11400000, guid: c2247875ab83ecd4498d86f000c7e0e7, type: 2}
+  - {fileID: 11400000, guid: 5da29af3d70b008449ed624aea2c9515, type: 2}
+  - {fileID: 11400000, guid: ecaec8dac4a828446a2c9567858b90a1, type: 2}
+  - {fileID: 11400000, guid: 2359005f6a44a7e4a9adf35dbb523209, type: 2}
+  - {fileID: 11400000, guid: 7706833d0a039d94496e4f7b3ea6c37e, type: 2}
+  useCornerTiles: 1
+  tilemap: {fileID: 1925506408467870620}
   resourceType: 1
   amountToGive: 1
   totalAmount: 12

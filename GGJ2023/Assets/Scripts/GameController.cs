@@ -76,8 +76,9 @@ public class GameController : MonoBehaviour
         if (GameManager.Instance.networkingManager.IsDebuggingMode)
         {
             GamePlayerInfo newInfo = new GamePlayerInfo();
+            List<Vector3> spawnLocations = tileManager.GetPlayerStartLocations();
 
-            GameObject playerObj = Instantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, Vector3.zero, Quaternion.identity);
+            GameObject playerObj = Instantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, spawnLocations[0], Quaternion.identity);
             player = playerObj.GetComponent<PlayerController>();
 
             newInfo.controller = player;
@@ -87,7 +88,8 @@ public class GameController : MonoBehaviour
         else
         {
             int localActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
-            Vector3 spawnLocation = Vector3.right * localActorNumber;
+            List<Vector3> spawnLocations = tileManager.GetPlayerStartLocations();
+            Vector3 spawnLocation = spawnLocations[localActorNumber - 1];
             GameObject prefab = GameManager.Instance.resourceManager.playerPrefab.gameObject;
             GameObject playerObj = NetworkingSingleton.NetworkInstantiate(prefab, spawnLocation, Quaternion.identity);
             // Rest will be done in PlayerController

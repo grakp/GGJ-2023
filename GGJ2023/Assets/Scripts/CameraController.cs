@@ -13,6 +13,9 @@ public class CameraController : MonoBehaviour
 
     private Transform target;
 
+    // Mostly for debugging purposes
+    public bool pauseScrolling = false;
+
     void Start()
     {
         PlayerController player = GameManager.Instance.gameController.GetMyPlayer();
@@ -29,6 +32,7 @@ public class CameraController : MonoBehaviour
     void Initialize()
     {
         target = GameManager.Instance.gameController.GetMyPlayer().transform;
+        transform.position = new Vector3(target.transform.position.x, target.transform.position.y, transform.position.z);
     }
 
     private IEnumerator WaitForPlayer()
@@ -44,13 +48,16 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (IsMouseInBounds())
+        if (!pauseScrolling)
         {
-            FollowTarget();
-        }
-        else
-        {
-            EdgeScrolling();
+            if (IsMouseInBounds())
+            {
+                FollowTarget();
+            }
+            else
+            {
+                EdgeScrolling();
+            }
         }
     }
 

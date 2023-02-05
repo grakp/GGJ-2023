@@ -13,6 +13,10 @@ public class PlayerInteractionController : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other) {
+        if (interactableGameObjects == null)
+        {
+            return;
+        }
 
         TiledGameObject tiledGameObject = other.GetComponent<TiledGameObject>();
         if (tiledGameObject == null)
@@ -28,6 +32,11 @@ public class PlayerInteractionController : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
+        if (interactableGameObjects == null)
+        {
+            return;
+        }
+
         TiledGameObject tiledGameObject = other.GetComponent<TiledGameObject>();
         if (tiledGameObject == null)
         {

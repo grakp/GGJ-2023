@@ -124,6 +124,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugCanvasText: {fileID: 0}
+  cornerSprites: []
+  useCornerTiles: 0
+  tilemap: {fileID: 0}
 --- !u!61 &1072721860721389248
 BoxCollider2D:
   m_ObjectHideFlags: 0
