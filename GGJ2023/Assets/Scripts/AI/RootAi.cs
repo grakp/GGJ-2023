@@ -31,13 +31,18 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
     public float randomSpawnVariance = 5.0f;
     private float currentRandomSpawnInterval;
 
+    bool hasInitialized = false;
 
     protected void Initialize(Vector2 dirToMove, float rotationWidth, TileInfo tile) {
+
+        hasInitialized = true;
+
         _dirToMove = dirToMove;
         rotationWidthDegrees = rotationWidth;
         _leftVectorBoundary = Quaternion.Euler(0, 0, -1*rotationWidth/2) * dirToMove;
         _rightVectorBoundary = Quaternion.Euler(0, 0, rotationWidth/2) * dirToMove;
         _occupiedTile = tile;
+        transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
         _tileManager = GameManager.Instance.gameController.tileManager;
         view = GetComponent<PhotonView>();
 
@@ -47,6 +52,13 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
         {
             Debug.LogError("Cannot find view!");
         }
+
+        if (tiledPhotonView.originTile == null)
+        {
+            Debug.LogError("Cannot find origin tile!: " + GameManager.Instance.gameController.tileManager.finishedWorldGeneration);
+        }
+
+         GameManager.Instance.gameController.tileManager.SetTileInUse(tiledPhotonView, tiledPhotonView.originTile);
 
         if (view.IsMine || GameManager.Instance.networkingManager.IsDebuggingMode)
         {
@@ -60,13 +72,26 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
     {
         FixUpName();
         builder = GetComponent<RootAiBuilder>();
-        TiledGameObject tileObj = GetComponent<TiledGameObject>();
         // TODO, the passed in values are random
+        if (GameManager.Instance.networkingManager.IsDebuggingMode)
+        {
+            DoInitialize();
+        }
+    }
+
+    private void DoInitialize()
+    {
+        TiledGameObject tileObj = GetComponent<TiledGameObject>();
         Initialize(new Vector2(0, 1), 90, tileObj.originTile);
     }
 
     void Update()
     {
+        if (!hasInitialized)
+        {
+            return;
+        }
+
         if (view.IsMine || GameManager.Instance.networkingManager.IsDebuggingMode)
         {
             if (isMasterTile)
@@ -215,21 +240,42 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
         return Vector2Int.zero;
     }
 
+    void InitializeRemote(int tileX, int tileY)
+    {
+        if (hasInitialized)
+        {
+            return;
+        }
+
+        if (GameManager.Instance.gameController.tileManager.finishedWorldGeneration)
+        {
+            tiledPhotonView.originTile = GameManager.Instance.gameController.tileManager.GetTileInfoInArraySafe(tileX, tileY);
+            DoInitialize();
+        }
+        else
+        {
+            StartCoroutine(WaitForWorldGeneration(tileX, tileY));
+        }
+    }
+
+    IEnumerator WaitForWorldGeneration(int tileX, int tileY)
+    {
+        while (!GameManager.Instance.gameController.tileManager.finishedWorldGeneration)
+        {
+            yield return null;
+        }
+
+        tiledPhotonView.originTile = GameManager.Instance.gameController.tileManager.GetTileInfoInArraySafe(tileX, tileY);
+        DoInitialize();
+    }
+
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         object[] customData = info.photonView.InstantiationData;
         int tileX = (int)customData[0];
         int tileY = (int)customData[1];
 
-        tiledPhotonView.originTile = GameManager.Instance.gameController.tileManager.GetTileInfoInArraySafe(tileX, tileY);
-        if (tiledPhotonView.originTile == null)
-        {
-            Debug.LogError("Cannot find origin tile!");
-        }
-
-        tiledPhotonView.originTile.tiledGameObject = tiledPhotonView;
-
-        transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
+        InitializeRemote(tileX, tileY);
     }
 
 }

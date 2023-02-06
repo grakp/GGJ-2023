@@ -105,6 +105,8 @@ public class TileManager : MonoBehaviour
 
     private List<Vector3> playerStartLocations = new List<Vector3>();
 
+    public bool finishedWorldGeneration = false;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -351,6 +353,7 @@ public class TileManager : MonoBehaviour
 
         CalculatePlayerStartLocations();
         //cachedEmptyTiles = new HashSet<TileInfo>(emptyTileList);
+        finishedWorldGeneration = true;
     }
 
     public TiledGameObject PlaceTile(TiledGameObject obj, TileInfo tile) {
@@ -393,12 +396,12 @@ public class TileManager : MonoBehaviour
                 TileInfo tileInfo = GetTileInfoInArraySafe(i, j);
                 if (tileInfo == null)
                 {
-                    Debug.LogError("Should not be the case!");
+                    Debug.LogWarning("Should not be the case!");
                     return;
                 }
                 if (!tileInfo.IsEmptyTile())
                 {
-                    Debug.LogError("Should not be the case!");
+                    Debug.LogWarning("Should not be the case!");
                 }
                 else
                 {
@@ -421,12 +424,12 @@ public class TileManager : MonoBehaviour
                 TileInfo tileInfo = GetTileInfoInArraySafe(i, j);
                 if (tileInfo == null)
                 {
-                    Debug.LogError("Should not be the case!");
+                    Debug.LogWarning("Should not be the case!");
                     return;
                 }
                 if (tileInfo.IsEmptyTile())
                 {
-                    Debug.LogError("Should not be the case!");
+                    Debug.LogWarning("Should not be the case!");
                 }
                 else
                 {

@@ -36,7 +36,16 @@ public abstract class Effect : MonoBehaviourPun, IPunInstantiateMagicCallback
         }
 
         BaseUnit baseUnit = view.GetComponent<BaseUnit>();
+        if (baseUnit == null)
+        {
+            return;
+        }
+
         Ability ability = baseUnit.GetAbilityWithName(abilityName);
+        if (ability == null)
+        {
+            return;
+        }
 
         Initialize(ability.gameObject, direction);
     }

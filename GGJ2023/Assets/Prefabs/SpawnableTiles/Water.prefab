@@ -167,7 +167,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8e6d803f1832443c18fa02c81eea11a2, type: 2}
   - {fileID: 11400000, guid: 12abc000154d34facae8d55b5ff6173f, type: 2}
   - {fileID: 11400000, guid: dc51d6dac0c44480b90ab42514c1fda4, type: 2}
-  useCornerTiles: 1
   tilemap: {fileID: 1925506408467870620}
   resourceType: 1
   amountToGive: 1

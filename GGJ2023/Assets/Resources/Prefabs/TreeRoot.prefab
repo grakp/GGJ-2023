@@ -178,9 +178,11 @@ MonoBehaviour:
   spawnParams:
     enemyPrefab: {fileID: 3752945402656279126, guid: 43f6e880a516541938f6534485ee9c2d, type: 3}
     numObjects: 5
+    maxEnemies: 20
     size: {x: 1, y: 1}
   enemySpawnInterval: 10
   isMasterTile: 0
+  randomSpawnVariance: 5
 --- !u!114 &8787357117493490074
 MonoBehaviour:
   m_ObjectHideFlags: 0
