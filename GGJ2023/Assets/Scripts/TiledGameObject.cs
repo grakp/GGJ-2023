@@ -10,7 +10,7 @@ public class TiledGameObject : MonoBehaviour
 
     public TMP_Text debugCanvasText;
 
-    public TileInfo originTile { get; protected set; }
+    public TileInfo originTile { get; set; }
 
     [Header("Corners")]
 

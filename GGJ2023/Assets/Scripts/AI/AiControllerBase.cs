@@ -7,4 +7,10 @@ public abstract class AiControllerBase : MonoBehaviourPun, IPunInstantiateMagicC
 {
     public abstract void OnPhotonInstantiate(PhotonMessageInfo info);
 
+    public void FixUpName()
+    {
+        string oldName = this.name;
+        oldName = oldName.Replace("(Clone)", "");
+        gameObject.name = oldName;
+    }
 }

@@ -89,9 +89,9 @@ GameObject:
   - component: {fileID: 7073951487774285600}
   - component: {fileID: 2758583086033470500}
   - component: {fileID: 4137202667527678681}
-  - component: {fileID: 7680313936865458127}
   - component: {fileID: 8787357117493490074}
   - component: {fileID: -3432735251237200400}
+  - component: {fileID: 7607839191936632097}
   m_Layer: 0
   m_Name: TreeRoot
   m_TagString: Interactable
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53913fec2692f46d894a2cf3482992b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rootPrefab: {fileID: 7680313936865458127}
+  rootPrefab: {fileID: 7607839191936632097}
 --- !u!114 &4137202667527678681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,24 +166,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a52dae32e26149329cb01f3eb0826fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkSpeed: 4
+  internalClockSec: 2
+  chanceToNotMove: 0.3
+  aggroStateController: {fileID: 0}
+  combatStateController: {fileID: 0}
   rotationWidthDegrees: 0
-  nextSpawnTimeSec: 2
+  nextSpawnTimeSec: 5
   builder: {fileID: 2758583086033470500}
---- !u!114 &7680313936865458127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4178018885498117184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bd0bf1dfeb44094d91e08147a980f86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  debugCanvasText: {fileID: 0}
-  cornerSprites: []
-  tilemap: {fileID: 0}
+  tiledPhotonView: {fileID: 7607839191936632097}
+  spawnParams:
+    enemyPrefab: {fileID: 3752945402656279126, guid: 43f6e880a516541938f6534485ee9c2d, type: 3}
+    numObjects: 5
+    size: {x: 1, y: 1}
+  enemySpawnInterval: 10
+  isMasterTile: 0
 --- !u!114 &8787357117493490074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,6 +220,21 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &7607839191936632097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4178018885498117184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56385417fefa39d478948d88369e5d19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugCanvasText: {fileID: 0}
+  cornerSprites: []
+  tilemap: {fileID: 0}
 --- !u!1 &8130468618362026984
 GameObject:
   m_ObjectHideFlags: 0

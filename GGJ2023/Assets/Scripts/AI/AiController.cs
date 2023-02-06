@@ -34,6 +34,7 @@ public class AiController : AiControllerBase
     // Start is called before the first frame update
     void Start()
     {
+        FixUpName();
         rb = GetComponent<Rigidbody2D>();
         self = GetComponent<BaseUnit>();
         _current = AiState.MOVE;
@@ -92,7 +93,7 @@ public class AiController : AiControllerBase
         while(true) {
             self.SetDirection((target.transform.position - transform.position).normalized);
             MoveRB(self.dir * walkSpeed);
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
     }
 
@@ -100,7 +101,7 @@ public class AiController : AiControllerBase
         while(true) {
             self.SetDirection((target.transform.position - transform.position).normalized);
             self.UseAbility("Swing");            
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
     }
 

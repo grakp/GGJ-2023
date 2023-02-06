@@ -12,6 +12,5 @@ public class RootAiBuilder : MonoBehaviour // MonoBehaviourPun, IPunInstantiateM
     public void Initialize(Vector2 dirToMove, float rotationWidth, TileInfo tile) {
         _tileManager = GameManager.Instance.gameController.tileManager;
         TiledGameObject obj = _tileManager.PlaceTile(rootPrefab, tile);
-        obj.name = "TreeRoot (Connected From " + gameObject.GetInstanceID() + ")";
     }
 }

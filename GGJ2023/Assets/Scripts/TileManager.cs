@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Linq;
 using Photon.Realtime;
+using Photon.Pun;
 
 public enum TileType
 {
@@ -74,8 +75,8 @@ public class TileManager : MonoBehaviour
 
     private TileInfo[,] tileInfos;
 
-    private int width;
-    private int height;
+    public int width {get; set;}
+    public int height {get; set;}
 
     private HashSet<TileInfo> cachedEmptyTiles = new HashSet<TileInfo>();
 
@@ -316,10 +317,27 @@ public class TileManager : MonoBehaviour
                 {
                     TileInfo tile = emptyTileList[foundTileIndex];
                     Vector3 instantiatePosition = GetWorldPositionOfTileInArray(tile.positionInArray);
-                    TiledGameObject newObject = Instantiate(param.tiledObjectPrefab, instantiatePosition, Quaternion.identity);
-                    newObject.transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
-                    newObject.Initialize(tile);
-                    SetTileInUse(newObject, tile);
+                    // Note: DO NOT OPTIMIZE CODE EVEN IF ONLY SPAWNED IN SERVER. Will mess up rest of world generation.
+                    PhotonView view = param.tiledObjectPrefab.GetComponent<PhotonView>();
+
+                    TiledGameObject newObject = null;
+                    if (view == null || GameManager.Instance.networkingManager.IsDebuggingMode)
+                    {
+                        newObject = Instantiate(param.tiledObjectPrefab, instantiatePosition, Quaternion.identity);
+                        newObject.transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
+                        newObject.Initialize(tile);
+                        SetTileInUse(newObject, tile);
+                    }
+                    else
+                    {
+                        if (PhotonNetwork.IsMasterClient)
+                        {
+                            object[] instantiationParams = new object[]{tile.positionInArray.x, tile.positionInArray.y};
+                            GameObject newObjectObj = NetworkingSingleton.NetworkInstantiate(param.tiledObjectPrefab.gameObject, instantiatePosition, Quaternion.identity, instantiationParams);
+                            tile.specialTile = true;
+                        }
+                    }
+
                 }
                 else
                 {
@@ -331,8 +349,6 @@ public class TileManager : MonoBehaviour
         }
 
 
-
-
         CalculatePlayerStartLocations();
         //cachedEmptyTiles = new HashSet<TileInfo>(emptyTileList);
     }
@@ -342,10 +358,26 @@ public class TileManager : MonoBehaviour
             return null;
         }
         Vector3 instantiatePosition = GetWorldPositionOfTileInArray(tile.positionInArray);
-        TiledGameObject newObject = Instantiate(obj, instantiatePosition, Quaternion.identity);
-        newObject.transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
-        newObject.Initialize(tile);
-        SetTileInUse(newObject, tile);
+
+        PhotonView view = obj.GetComponent<PhotonView>();
+        TiledGameObject newObject = null;
+
+        if (view == null || GameManager.Instance.networkingManager.IsDebuggingMode)
+        {
+            newObject = Instantiate(obj, instantiatePosition, Quaternion.identity);
+            newObject.transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
+            newObject.Initialize(tile);
+            SetTileInUse(newObject, tile);
+        }
+        else
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                object[] instantiationParams = new object[]{tile.positionInArray.x, tile.positionInArray.y};
+                GameObject newObjectObj = NetworkingSingleton.NetworkInstantiate(obj.gameObject, instantiatePosition, Quaternion.identity, instantiationParams);
+                return null;
+            }
+        }
 
         return newObject;
     }
@@ -727,7 +759,7 @@ public class TileManager : MonoBehaviour
 
     public bool IsSpawnableLocation(Vector2Int positionInArray, Vector2Int objectSize)
     {
-        if (positionInArray.x + objectSize.x >= width || positionInArray.y + objectSize.y >= height)
+        if (positionInArray.x < 0 || positionInArray.y < 0 || positionInArray.x + objectSize.x >= width || positionInArray.y + objectSize.y >= height)
         {
             return false;
         }
@@ -747,8 +779,13 @@ public class TileManager : MonoBehaviour
 
         // Finally, do a collision check with already placed units on the map
         Vector2 worldPosition = GetWorldPositionOfTileInArray(positionInArray);
-        Vector2 centeredPosition = worldPosition + new Vector2(objectSize.x / 2.0f, objectSize.y / 2.0f);
-        Collider2D[] collisions = Physics2D.OverlapBoxAll(centeredPosition, objectSize, 0);
+        Vector2 centeredPosition = worldPosition;
+
+        Vector2 fixedObjectSize = objectSize;
+        fixedObjectSize.x -= 0.1f;
+        fixedObjectSize.y -= 0.1f;
+
+        Collider2D[] collisions = Physics2D.OverlapBoxAll(centeredPosition, fixedObjectSize, 0);
         if (collisions == null || collisions.Length == 0)
         {
             return true;
