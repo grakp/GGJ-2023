@@ -1763,10 +1763,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shopkeeperUIController: {fileID: 929528594}
-  playerHealthSlider: {fileID: 253012387}
+  playerHealthText: {fileID: 0}
   woodResourceText: {fileID: 216506850}
   waterResourceText: {fileID: 442223899}
   stoneResourceText: {fileID: 1531854225}
+  targetHealthText: {fileID: 0}
+  showTargetTime: 3
 --- !u!1 &1141078389
 GameObject:
   m_ObjectHideFlags: 0
@@ -2004,6 +2006,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edgeScrollSize: 30
   smoothTime: 0.25
+  pauseScrolling: 0
 --- !u!81 &1295373508
 AudioListener:
   m_ObjectHideFlags: 0
@@ -4805,6 +4808,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   edgeScrollSize: 30
   smoothTime: 0.25
+  pauseScrolling: 0
 --- !u!81 &2038683241
 AudioListener:
   m_ObjectHideFlags: 0
