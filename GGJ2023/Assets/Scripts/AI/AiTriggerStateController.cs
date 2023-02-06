@@ -21,6 +21,11 @@ public class AiTriggerStateController : MonoBehaviour // MonoBehaviourPun, IPunI
     }
 
     public GameObject GetClosestTargetInRange() {
+        if (_targetsInRange == null)
+        {
+            return null;
+        }
+
         if(_targetsInRange.Count == 0) {
             return null;
         }
@@ -37,6 +42,11 @@ public class AiTriggerStateController : MonoBehaviour // MonoBehaviourPun, IPunI
     }
 
     void OnTriggerEnter2D(Collider2D other) {
+        if (_targetsInRange == null)
+        {
+            return;
+        }
+
         GameObject potentialTarget = other.gameObject;
         if (other.gameObject == null)
         {
@@ -55,6 +65,11 @@ public class AiTriggerStateController : MonoBehaviour // MonoBehaviourPun, IPunI
     }
 
     void OnTriggerExit2D(Collider2D other) {
+        if (_targetsInRange == null)
+        {
+            return;
+        }
+
         GameObject potentialTarget = other.gameObject;
         if (potentialTarget == null)
         {

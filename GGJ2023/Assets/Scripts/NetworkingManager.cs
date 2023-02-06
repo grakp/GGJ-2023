@@ -89,6 +89,16 @@ public class ShopPurchasePacket : PacketBase
     public int itemIndexToBuy = 0;
 };
 
+[System.Serializable]
+public class DealDamagePacket : PacketBase
+{
+    public const byte id = 6;
+    public override byte packetId { get { return id; } protected set { packetId = value; }}
+    public int photonViewId;
+    public int instigatorViewId;
+    public int damageDealt;
+};
+
 
 public class NetworkingManager : MonoBehaviour
 {
@@ -125,7 +135,7 @@ public class NetworkingManager : MonoBehaviour
         PhotonPeer.RegisterType(typeof(SetWorldSeedPacket), SetWorldSeedPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
         PhotonPeer.RegisterType(typeof(InteractPacket), InteractPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
         PhotonPeer.RegisterType(typeof(ShopPurchasePacket), ShopPurchasePacket.id, PacketBase.Serialize, PacketBase.Deserialize);
-
+        PhotonPeer.RegisterType(typeof(DealDamagePacket), DealDamagePacket.id, PacketBase.Serialize, PacketBase.Deserialize);
 
         PhotonNetwork.NetworkingClient.EventReceived += Network_OnEventReceived;
     
@@ -178,6 +188,9 @@ public class NetworkingManager : MonoBehaviour
                 break;
             case ShopPurchasePacket.id:
                 HandlePacket((ShopPurchasePacket)obj.CustomData);
+                break;
+            case DealDamagePacket.id:
+                HandlePacket((DealDamagePacket)obj.CustomData);
                 break;
             default:
                 if (dataType.IsSubclassOf(typeof(PacketBase)))
@@ -338,6 +351,40 @@ public class NetworkingManager : MonoBehaviour
         tiledGameObject.DoBuyItemAtIndex(packet.itemIndexToBuy, playerInfo.controller);
     }
 
+    public void HandlePacket(DealDamagePacket packet)
+    {
+        CheckClientOnly(packet);
+
+        PhotonView target = PhotonView.Find(packet.photonViewId);
+        if (target == null)
+        {
+            Debug.LogError("Cannot find photon view");
+            return;
+        }
+
+        BaseUnit unit = target.GetComponent<BaseUnit>();
+        if (unit == null)
+        {
+            Debug.LogError("Cannot find unit");
+            return;
+        }
+
+        PhotonView instigator = PhotonView.Find(packet.instigatorViewId);
+        if (instigator == null)
+        {
+            Debug.LogError("Cannot find instigator");
+            return;
+        }
+
+        BaseUnit instigatorUnit = instigator.GetComponent<BaseUnit>();
+        if (instigatorUnit == null)
+        {
+            Debug.LogError("Cannot find instigator unit");
+            return;
+        }
+
+        unit.DoTakeDamage(packet.damageDealt, instigatorUnit);
+    }
 
 
     public void CheckServerOnly(PacketBase packet)

@@ -37,6 +37,14 @@ public class BaseUnit : MonoBehaviour
     }
 
     public bool UseAbility(string name) {
+
+        // Probably should move this to replicate more stuff, but good enough for now
+        PhotonView view = GetComponent<PhotonView>();
+        if (!GameManager.Instance.networkingManager.IsDebuggingMode && view != null && !view.IsMine)
+        {
+            return false;
+        }
+
         if(_abilitiesMap.ContainsKey(name) && !_isUsingAbility) {
             if(!_abilityOnCooldownsMap[name]) {
                 _isUsingAbility = true;
@@ -50,7 +58,28 @@ public class BaseUnit : MonoBehaviour
         return false;
     }
 
-    public void TakeDamage(int damage, BaseUnit instigator) {
+    public void RequestTakeDamage(int damage, BaseUnit instigator)
+    {
+        // Only the server has authority to take damage
+        if (!GameManager.Instance.networkingManager.IsDebuggingMode && !PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
+        DoTakeDamage(damage, instigator);
+
+        PhotonView damagedView = GetComponent<PhotonView>();
+        PhotonView instigatorPhotonView = instigator.GetComponent<PhotonView>();
+
+        DealDamagePacket packet = new DealDamagePacket();
+        packet.photonViewId = damagedView.ViewID;
+        packet.instigatorViewId = instigatorPhotonView.ViewID;
+        packet.damageDealt = damage;
+        GameManager.Instance.networkingManager.SendRequestPacket(packet);
+    }
+
+    public void DoTakeDamage(int damage, BaseUnit instigator)
+    {
         // TODO: Trigger damage anims?
         health = Mathf.Max(health - damage, 0);
 

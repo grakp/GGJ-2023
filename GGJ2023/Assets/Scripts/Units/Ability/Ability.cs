@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
 public class Ability : MonoBehaviour
@@ -20,7 +21,15 @@ public class Ability : MonoBehaviour
         }
         else
         {
-            object[] customAbilityData = new object[]{abilityName, direction};
+            // Need photon view to get instance of instigator
+            PhotonView view = GetComponent<PhotonView>();
+            if (view == null)
+            {
+                Debug.LogError("Cannot find photon view!");
+            }
+
+            
+            object[] customAbilityData = new object[]{ view.ViewID, abilityName, direction};
             gameplayEffect = NetworkingSingleton.NetworkInstantiate(gameplayEffectPrefab, this.gameObject.transform.position, Quaternion.identity, customAbilityData);
         }
 

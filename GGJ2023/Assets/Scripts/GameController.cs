@@ -149,6 +149,7 @@ public class GameController : MonoBehaviour
         newInfo.playerNetworkInfo = networkInfo;
 
         newInfo.controller.SetPlayerName(networkInfo.NickName);
+        newInfo.controller.gameObject.name = "Player_ " + networkInfo.NickName;
 
         if (player.photonView.IsMine)
         {
