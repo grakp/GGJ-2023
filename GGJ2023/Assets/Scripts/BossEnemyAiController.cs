@@ -107,7 +107,7 @@ public class BossEnemyAiController : AiControllerBase
             currentHitboxInterval = 0;
             foreach (BaseUnit unit in magicCircle.collidedUnits)
             {
-                unit.DoTakeDamage(1, selfUnit);
+                unit.RequestTakeDamage(1, selfUnit);
             }
         }
 
