@@ -77,7 +77,7 @@ Tilemap:
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: e0a7d682596460e44af05e8f52ba4464, type: 2}
+    m_Data: {fileID: 11400000, guid: 5077dedfd5a87eb4e8ec7ada83ef99a0, type: 2}
   m_TileSpriteArray:
   - m_RefCount: 0
     m_Data: {fileID: 0}
@@ -102,7 +102,7 @@ Tilemap:
   - m_RefCount: 0
     m_Data: {fileID: 0}
   - m_RefCount: 1
-    m_Data: {fileID: -892461027, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
+    m_Data: {fileID: 21300000, guid: 27fa214d6d7a24ed09f099617d537f8b, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 1
     m_Data:
@@ -273,7 +273,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugCanvasText: {fileID: 7141507694929849699}
   cornerSprites: []
-  useCornerTiles: 0
   tilemap: {fileID: 0}
   resourceType: 2
   amountToGive: 1

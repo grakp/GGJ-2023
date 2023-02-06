@@ -13,6 +13,12 @@ public class CameraController : MonoBehaviour
 
     private Transform target;
 
+    public float minCameraLocationX = -43;
+    public float maxCameraLocationX = 43;
+
+    public float minCameraLocationY = -43;
+    public float maxCameraLocationY = 43;
+
     // Mostly for debugging purposes
     public bool pauseScrolling = false;
 
@@ -48,6 +54,11 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            pauseScrolling = !pauseScrolling;
+        }
+
         if (!pauseScrolling)
         {
             if (IsMouseInBounds())
@@ -68,29 +79,39 @@ public class CameraController : MonoBehaviour
     {
         if (Input.mousePosition.x < edgeScrollSize) // Left edge
         {
-          velocity.x = -10f;
+            velocity.x = -10f;
         }
         else if (Input.mousePosition.x > Screen.width - edgeScrollSize) // Right edge
         {
-          velocity.x = 10f;
+            velocity.x = 10f;
         }
         if (Input.mousePosition.y < edgeScrollSize) // Bottom edge
         {
-          velocity.y = -10f;
+            velocity.y = -10f;
         }
         else if (Input.mousePosition.y > Screen.height - edgeScrollSize) // Top edge
         {
-          velocity.y = 10f;
+            velocity.y = 10f;
         }
         Vector3 targetPosition = target.position + offset;
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+        Vector3 movedPosition = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+
+        movedPosition.x = Mathf.Clamp(movedPosition.x, minCameraLocationX, maxCameraLocationX);
+        movedPosition.y = Mathf.Clamp(movedPosition.y, minCameraLocationY, maxCameraLocationY);
+
+        transform.position = movedPosition;
     }
 
     // Camera follows the target
     void FollowTarget()
     {
         Vector3 targetPosition = target.position + offset;
-        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+
+        Vector3 movedPosition = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
+        movedPosition.x = Mathf.Clamp(movedPosition.x, minCameraLocationX, maxCameraLocationY);
+        movedPosition.y = Mathf.Clamp(movedPosition.y, minCameraLocationY, maxCameraLocationY);
+
+        transform.position = movedPosition;
     }
 
     // Checks if the mouse is within the area in which the camera follows the target

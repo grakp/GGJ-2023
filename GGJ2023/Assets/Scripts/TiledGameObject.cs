@@ -35,15 +35,11 @@ public class TiledGameObject : MonoBehaviour
 
     public virtual void Initialize(TileInfo tileInfo)
     {
-        int test = 0x1110;
-        int cornerTest = GetTileIndexFromCorner(test);
-        Debug.Log("Corner test: " + cornerTest);
         originTile = tileInfo;
         if (debugCanvasText != null && debugCanvasText.gameObject.activeInHierarchy)
         {
             debugCanvasText.text = originTile.positionInArray.x + ", " + originTile.positionInArray.y;
         }
-
     }
 
     public void SetCornerTile(int cornerTileIndex)
