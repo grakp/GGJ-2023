@@ -393,7 +393,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2a42749acc77484dafc60fdc64a1ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 200
+  health: 300
   unitType: 1
   dir: {x: 0, y: 1}
   weapon: {fileID: 0}
