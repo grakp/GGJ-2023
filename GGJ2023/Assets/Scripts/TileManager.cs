@@ -727,7 +727,7 @@ public class TileManager : MonoBehaviour
 
     public bool IsSpawnableLocation(Vector2Int positionInArray, Vector2Int objectSize)
     {
-        if (positionInArray.x + objectSize.x >= width || positionInArray.y + objectSize.y >= height || positionInArray.x + objectSize.x < 0 || positionInArray.y + objectSize.y < 0)
+        if (positionInArray.x + objectSize.x >= width || positionInArray.y + objectSize.y >= height)
         {
             return false;
         }
@@ -748,7 +748,7 @@ public class TileManager : MonoBehaviour
         // Finally, do a collision check with already placed units on the map
         Vector2 worldPosition = GetWorldPositionOfTileInArray(positionInArray);
         Vector2 centeredPosition = worldPosition + new Vector2(objectSize.x / 2.0f, objectSize.y / 2.0f);
-        Collider2D[] collisions = Physics2D.OverlapBoxAll(centeredPosition, new Vector2(objectSize.x, objectSize.y), 0);
+        Collider2D[] collisions = Physics2D.OverlapBoxAll(centeredPosition, objectSize, 0);
         if (collisions == null || collisions.Length == 0)
         {
             return true;
@@ -758,7 +758,6 @@ public class TileManager : MonoBehaviour
         {
             if (!collisions[i].isTrigger)
             {
-                Debug.Log(collisions[i].gameObject);
                 return false;
             }
         }
