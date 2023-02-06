@@ -40,7 +40,7 @@ public class BaseUnit : MonoBehaviour
 
         // Probably should move this to replicate more stuff, but good enough for now
         PhotonView view = GetComponent<PhotonView>();
-        if (view != null && !view.IsMine)
+        if (!GameManager.Instance.networkingManager.IsDebuggingMode && view != null && !view.IsMine)
         {
             return false;
         }

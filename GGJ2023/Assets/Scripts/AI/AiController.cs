@@ -50,11 +50,11 @@ public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
 
     void Update() {
 
-        if (!base.photonView.IsMine)
+        if (!GameManager.Instance.networkingManager.IsDebuggingMode && !base.photonView.IsMine)
         {
             return;
         }
-        
+
         if(_current == AiState.MOVE) {
             GameObject potentialAggro = aggroStateController.GetClosestTargetInRange();
             if(potentialAggro != null) {
@@ -134,7 +134,7 @@ public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
     public void MoveRB(Vector2 velocity)
     {
         // Movement is already handled in transform view
-        if (base.photonView.IsMine)
+        if (GameManager.Instance.networkingManager.IsDebuggingMode || base.photonView.IsMine)
         {
             rb.velocity = velocity;
         }
