@@ -228,6 +228,7 @@ public class TileManager : MonoBehaviour
         {
 
             HashSet<Vector2Int> waterTileLocations = new HashSet<Vector2Int>();
+            Dictionary<Vector2Int, TiledGameObject> waterTileObjects = new  Dictionary<Vector2Int, TiledGameObject>();
 
             for (int i = 0; i < numRivers; i++)
             {
@@ -251,6 +252,7 @@ public class TileManager : MonoBehaviour
                     SetTileInUse(newObject, tile);
 
                     waterTileLocations.Add(tile.positionInArray);
+                    waterTileObjects.Add(tile.positionInArray, newObject);
                 }
             }
 
@@ -260,31 +262,36 @@ public class TileManager : MonoBehaviour
                 Vector2Int arrayPosition = waterLocation;
                 TileInfo tile = tileInfos[arrayPosition.x, arrayPosition.y];
 
+                int corner = 0;
+
                 Vector2Int upPosition = waterLocation + Vector2Int.up;
                 if (!waterTileLocations.Contains(upPosition))
                 {
-                    tile.corners |= 0x1000;
+                    corner |= 0x1000;
                 }
 
                 Vector2Int rightPosition = waterLocation + Vector2Int.right;
                 if (!waterTileLocations.Contains(rightPosition))
                 {
-                    tile.corners |= 0x0100;
+                    corner |= 0x0100;
                 }
 
                 Vector2Int downPosition = waterLocation + Vector2Int.down;
                 if (!waterTileLocations.Contains(downPosition))
                 {
-                    tile.corners |= 0x0010;
+                    corner |= 0x0010;
                 }
 
                 Vector2Int leftPosition = waterLocation + Vector2Int.left;
                 if (!waterTileLocations.Contains(leftPosition))
                 {
-                    tile.corners |= 0x0001;
+                    corner |= 0x0001;
                 }
-            }
 
+                TiledGameObject waterObject = waterTileObjects[waterLocation];
+                int cornerIndex = GetTileIndexFromCorner(corner);
+                waterObject.SetCornerTile(cornerIndex);
+            }
         }
         
         foreach (TileSpawnParams param in spawnParams)

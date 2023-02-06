@@ -18,8 +18,6 @@ public class TiledGameObject : MonoBehaviour
     private List<TileBase> cornerSprites;
 
     [SerializeField]
-    bool useCornerTiles = false;
-    [SerializeField]
     protected Tilemap tilemap;
 
     void OnDestroy()
@@ -37,19 +35,21 @@ public class TiledGameObject : MonoBehaviour
 
     public virtual void Initialize(TileInfo tileInfo)
     {
+        int test = 0x1110;
+        int cornerTest = GetTileIndexFromCorner(test);
+        Debug.Log("Corner test: " + cornerTest);
         originTile = tileInfo;
         if (debugCanvasText != null && debugCanvasText.gameObject.activeInHierarchy)
         {
             debugCanvasText.text = originTile.positionInArray.x + ", " + originTile.positionInArray.y;
         }
 
-        if (useCornerTiles && cornerSprites.Count > 0)
-        {
-            int tileCorner = GetTileIndexFromCorner(originTile.corners);
-            TileBase tileSprite = cornerSprites[tileCorner];
-            PaintTile(tileSprite, originTile.cellPosition);
-        }
+    }
 
+    public void SetCornerTile(int cornerTileIndex)
+    {
+        TileBase tileSprite = cornerSprites[cornerTileIndex];
+        PaintTile(tileSprite, originTile.cellPosition);
     }
 
     public virtual void RequestInteract(PlayerController player)
