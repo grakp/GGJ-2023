@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
+public class AiController : AiControllerBase
 {
     // Components
     private Rigidbody2D rb;
@@ -140,7 +140,7 @@ public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
         }
     }
 
-    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         GameManager.Instance.gameController.AddEnemy(this);
     }

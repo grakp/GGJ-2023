@@ -9,6 +9,14 @@ public class GamePlayerInfo
     public Photon.Realtime.Player playerNetworkInfo = null;
 };
 
+[System.Serializable]
+public class EnemySpawnParams
+{
+    public AiControllerBase enemyPrefab;
+    public int numObjects = 10;
+    public Vector2Int size = Vector2Int.one;
+};
+
 public class GameController : MonoBehaviour
 {
     public Transform spawnedObjectParent;
@@ -21,13 +29,15 @@ public class GameController : MonoBehaviour
 
     private List<GamePlayerInfo> players = new List<GamePlayerInfo>();
 
-    public bool debug_SpawnInCenterOfMap = false;
+    public bool debug_DoFixedSpawnLocation = false;
+
+    public Vector3 debug_FixedSpawnLocation = Vector3.zero;
 
     [Header("Enemies")]
     [SerializeField]
     private List<EnemySpawnParams> enemySpawnParams;
 
-    private List<AiController> enemies = new List<AiController>();
+    private List<AiControllerBase> enemies = new List<AiControllerBase>();
 
     // Start is called before the first frame update
     void Awake()
@@ -92,9 +102,9 @@ public class GameController : MonoBehaviour
 
             Vector3 spawnLocation = spawnLocations[0];
 
-            if (debug_SpawnInCenterOfMap)
+            if (debug_DoFixedSpawnLocation)
             {
-                spawnLocation = Vector3.zero;
+                spawnLocation = debug_FixedSpawnLocation;
             }
 
             GameObject playerObj = Instantiate(GameManager.Instance.resourceManager.playerPrefab.gameObject, spawnLocation, Quaternion.identity);
@@ -109,9 +119,9 @@ public class GameController : MonoBehaviour
             int localActorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
             List<Vector3> spawnLocations = tileManager.GetPlayerStartLocations();
             Vector3 spawnLocation = spawnLocations[localActorNumber - 1];
-            if (debug_SpawnInCenterOfMap)
+            if (debug_DoFixedSpawnLocation)
             {
-                spawnLocation = Vector3.zero + Vector3.right * (localActorNumber - 1);
+                spawnLocation = debug_FixedSpawnLocation + Vector3.right * (localActorNumber - 1);
             }
 
             GameObject prefab = GameManager.Instance.resourceManager.playerPrefab.gameObject;
@@ -177,11 +187,11 @@ public class GameController : MonoBehaviour
         return null;
     }
 
-    public void SpawnEnemy(AiController enemyPrefab, Vector3 spawnLocation)
+    public void SpawnEnemy(AiControllerBase enemyPrefab, Vector3 spawnLocation)
     {
         if (GameManager.Instance.networkingManager.IsDebuggingMode)
         {
-            AiController enemy = Instantiate<AiController>(enemyPrefab, spawnLocation, Quaternion.identity);
+            AiControllerBase enemy = Instantiate<AiControllerBase>(enemyPrefab, spawnLocation, Quaternion.identity);
         }
         else if (PhotonNetwork.IsMasterClient)
         {
@@ -190,12 +200,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void AddEnemy(AiController enemy)
+    public void AddEnemy(AiControllerBase enemy)
     {
         enemies.Add(enemy);
     }
 
-    public void ReleaseEnemy(AiController enemy)
+    public void ReleaseEnemy(AiControllerBase enemy)
     {
         if (enemies.Contains(enemy))
         {

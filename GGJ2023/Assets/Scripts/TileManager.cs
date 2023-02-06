@@ -55,15 +55,6 @@ public class TileSpawnParams
 };
 
 
-
-[System.Serializable]
-public class EnemySpawnParams
-{
-    public AiController enemyPrefab;
-    public int numObjects = 10;
-    public Vector2Int size = Vector2Int.one;
-};
-
 public class TileManager : MonoBehaviour
 {
     [SerializeField]

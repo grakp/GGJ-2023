@@ -77,6 +77,11 @@ public class CameraController : MonoBehaviour
     // Camera pushes in the direction the mouse is in
     void EdgeScrolling() 
     {
+        if (target == null)
+        {
+            return;
+        }
+
         if (Input.mousePosition.x < edgeScrollSize) // Left edge
         {
             velocity.x = -10f;
@@ -105,6 +110,11 @@ public class CameraController : MonoBehaviour
     // Camera follows the target
     void FollowTarget()
     {
+        if (target == null)
+        {
+            return;
+        }
+        
         Vector3 targetPosition = target.position + offset;
 
         Vector3 movedPosition = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);

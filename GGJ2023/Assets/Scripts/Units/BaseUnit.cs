@@ -17,8 +17,8 @@ public class BaseUnit : MonoBehaviour
     public Weapon weapon;
     public Ability[] abilities;
 
-    protected Dictionary<string, Ability> _abilitiesMap;
-    protected Dictionary<string, bool> _abilityOnCooldownsMap;
+    protected Dictionary<string, Ability> _abilitiesMap = new Dictionary<string, Ability>();
+    protected Dictionary<string, bool> _abilityOnCooldownsMap = new Dictionary<string, bool>();
 
     private bool _isUsingAbility;
 
@@ -93,7 +93,7 @@ public class BaseUnit : MonoBehaviour
             }
         }
 
-        AiController aiController = GetComponent<AiController>();
+        AiControllerBase aiController = GetComponent<AiControllerBase>();
         if (aiController != null)
         {
             PlayerController instigatorPlayer = instigator.GetComponent<PlayerController>();
