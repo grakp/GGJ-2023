@@ -24,12 +24,19 @@ public abstract class Effect : MonoBehaviourPun, IPunInstantiateMagicCallback
         }
 
         object[] customData = info.photonView.InstantiationData;
-        System.String abilityName = (System.String)customData[0];
-        Vector3 direction = (Vector3)customData[1];
+        int viewId = (int)customData[0];
+        System.String abilityName = (System.String)customData[1];
+        Vector3 direction = (Vector3)customData[2];
 
-        GamePlayerInfo playerInfo = GameManager.Instance.gameController.GetPlayerFromActorNumber(info.Sender.ActorNumber);
-        BaseUnit baseUnit = playerInfo.controller.GetComponent<BaseUnit>();
-        Ability ability = baseUnit.GetAbilityWithName((string)customData[0]);
+        PhotonView view = PhotonView.Find(viewId);
+        if (view == null)
+        {
+            Debug.LogWarning("Unable to find view! (Maybe the object died?)");
+            return;
+        }
+
+        BaseUnit baseUnit = view.GetComponent<BaseUnit>();
+        Ability ability = baseUnit.GetAbilityWithName(abilityName);
 
         Initialize(ability.gameObject, direction);
     }

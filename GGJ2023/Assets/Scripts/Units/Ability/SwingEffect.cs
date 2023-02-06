@@ -8,17 +8,18 @@ public class SwingEffect : Effect
     [Tooltip("Sync with animation duration")]
     public float durationSec;
 
-    private GameObject _instigator;
-
     // Weapon the instigator is holding
     private Weapon _wep;
 
     // List of already handled targets
     private HashSet<int> _triggeredObjects;
 
+    bool hasInitialized = false;
+
     public override void Initialize(GameObject instigator, Vector3 direction) {
+        hasInitialized = true;
         _triggeredObjects = new HashSet<int>();
-        _instigator = instigator;
+        this.instigator = instigator;
         _wep = instigator.GetComponentInChildren<Weapon>();
 
         transform.SetParent(instigator.transform);
@@ -42,21 +43,55 @@ public class SwingEffect : Effect
     }
 
     public override void TriggerEntered(Collider2D other) {
+
+        if (!GameManager.Instance.networkingManager.IsDebuggingMode && !PhotonNetwork.IsMasterClient)
+        {
+            // All effects are to be handled by the server and then replicated.
+            return;
+        }
+
         GameObject possibleEnemy = other.gameObject;
-        if (possibleEnemy == instigator)
+        if (possibleEnemy == null)
         {
             return;
         }
+
+        if (instigator == null)
+        {
+            return;
+        }
+
+        // if (possibleEnemy == instigator)
+        // {
+        //     Debug.LogWarning("A" + GetInstanceID());
+        //     return;
+        // }
 
         if(_triggeredObjects.Contains(possibleEnemy.GetInstanceID())) {
             return;
         }
         _triggeredObjects.Add(other.gameObject.GetInstanceID());
 
-        BaseUnit instigatorUnit = _instigator.GetComponent<BaseUnit>();
+        BaseUnit instigatorUnit = instigator.GetComponent<BaseUnit>();
+        if (instigatorUnit == null)
+        {
+            return;
+        }
+
         BaseUnit enemyUnit = possibleEnemy.GetComponent<BaseUnit>();
+
+        if (enemyUnit == null)
+        {
+            return;
+        }
+
+        if (_wep == null)
+        {
+            return;
+        }
+
         if(enemyUnit != null && enemyUnit.unitType != instigatorUnit.unitType) {            
-            enemyUnit.TakeDamage(GetDamage(), instigatorUnit);
+            enemyUnit.RequestTakeDamage(GetDamage(), instigatorUnit);
         }
     }
 

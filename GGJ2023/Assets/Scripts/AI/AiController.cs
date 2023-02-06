@@ -49,6 +49,12 @@ public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
     }
 
     void Update() {
+
+        if (!base.photonView.IsMine)
+        {
+            return;
+        }
+        
         if(_current == AiState.MOVE) {
             GameObject potentialAggro = aggroStateController.GetClosestTargetInRange();
             if(potentialAggro != null) {
@@ -85,7 +91,7 @@ public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
     IEnumerator AggressiveState(GameObject target) {
         while(true) {
             self.SetDirection((target.transform.position - transform.position).normalized);
-            rb.velocity = self.dir * walkSpeed;
+            MoveRB(self.dir * walkSpeed);
             yield return new WaitForFixedUpdate();
         }
     }
@@ -102,7 +108,7 @@ public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
     public void EnterMoveState() {
         // Stop the existing coroutine
         StopCoroutine(_coroutine);
-        rb.velocity = Vector2.zero;
+        MoveRB(Vector2.zero);
         _coroutine = StartCoroutine(MoveState());
         _current = AiState.MOVE;
     }
@@ -111,7 +117,7 @@ public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
     public void EnterAggressiveState(GameObject target) {
         // Stop the existing coroutine
         StopCoroutine(_coroutine);
-        rb.velocity = Vector2.zero;
+        MoveRB(Vector2.zero);
         _coroutine = StartCoroutine(AggressiveState(target));
         _current = AiState.AGGRESSIVE;
     }
@@ -120,9 +126,18 @@ public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
     public void EnterCombatState(GameObject target) {
         // Stop the existing coroutine
         StopCoroutine(_coroutine);
-        rb.velocity = Vector2.zero;
+        MoveRB(Vector2.zero);
         _coroutine = StartCoroutine(CombatState(target));
         _current = AiState.COMBAT;
+    }
+
+    public void MoveRB(Vector2 velocity)
+    {
+        // Movement is already handled in transform view
+        if (base.photonView.IsMine)
+        {
+            rb.velocity = velocity;
+        }
     }
 
     public void OnPhotonInstantiate(PhotonMessageInfo info)
