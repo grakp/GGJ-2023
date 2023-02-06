@@ -43,6 +43,11 @@ public class SwingEffect : Effect
 
     public override void TriggerEntered(Collider2D other) {
         GameObject possibleEnemy = other.gameObject;
+        if (possibleEnemy == instigator)
+        {
+            return;
+        }
+
         if(_triggeredObjects.Contains(possibleEnemy.GetInstanceID())) {
             return;
         }
@@ -51,7 +56,7 @@ public class SwingEffect : Effect
         BaseUnit instigatorUnit = _instigator.GetComponent<BaseUnit>();
         BaseUnit enemyUnit = possibleEnemy.GetComponent<BaseUnit>();
         if(enemyUnit != null && enemyUnit.unitType != instigatorUnit.unitType) {            
-            enemyUnit.TakeDamage(GetDamage());
+            enemyUnit.TakeDamage(GetDamage(), instigatorUnit);
         }
     }
 

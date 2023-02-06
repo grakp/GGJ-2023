@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class BaseUnit : MonoBehaviour
 {
@@ -49,9 +50,29 @@ public class BaseUnit : MonoBehaviour
         return false;
     }
 
-    public void TakeDamage(int damage) {
+    public void TakeDamage(int damage, BaseUnit instigator) {
         // TODO: Trigger damage anims?
         health = Mathf.Max(health - damage, 0);
+
+        PlayerController playerController = GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            // Update player health if it has been hit
+            if (GameManager.Instance.networkingManager.IsDebuggingMode || (playerController.photonView != null && playerController.photonView.IsMine))
+            {
+                GameManager.Instance.gameController.uiController.UpdateHealth();
+            }
+        }
+
+        AiController aiController = GetComponent<AiController>();
+        if (aiController != null)
+        {
+            PlayerController instigatorPlayer = instigator.GetComponent<PlayerController>();
+            if (GameManager.Instance.networkingManager.IsDebuggingMode || (instigatorPlayer != null && instigatorPlayer.photonView.IsMine))
+            {
+                GameManager.Instance.gameController.uiController.ShowTargetHealth(this);
+            }
+        }
     }
 
     void Start() {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
-public class AiController : MonoBehaviour // MonoBehaviourPun, IPunInstantiateMagicCallback
+public class AiController : MonoBehaviourPun, IPunInstantiateMagicCallback
 {
     // Components
     private Rigidbody2D rb;
@@ -123,5 +123,10 @@ public class AiController : MonoBehaviour // MonoBehaviourPun, IPunInstantiateMa
         rb.velocity = Vector2.zero;
         _coroutine = StartCoroutine(CombatState(target));
         _current = AiState.COMBAT;
+    }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        GameManager.Instance.gameController.AddEnemy(this);
     }
 }
