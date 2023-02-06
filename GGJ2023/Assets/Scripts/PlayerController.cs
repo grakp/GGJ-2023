@@ -119,8 +119,7 @@ public class PlayerController : MonoBehaviourPun, IPunInstantiateMagicCallback
 
     public void Give(ShopItemInstance shopItem)
     {
-        // TODO:
-        Debug.Log("Given item: " + shopItem.description);
+        self.RequestGiveStat(shopItem.stat, shopItem.magnifier);
     }
 
     public void Take(int wood, int water, int rock)

@@ -104,6 +104,51 @@ public class BaseUnit : MonoBehaviour
         }
     }
 
+    public void RequestGiveStat(ItemStat stat, int amount)
+    {
+        if (GameManager.Instance.networkingManager.IsDebuggingMode || PhotonNetwork.IsMasterClient)
+        {
+            DoGiveStat(stat, amount);
+        }
+
+        PhotonView view = GetComponent<PhotonView>();
+        if (view != null)
+        {
+            GiveStatPacket packet = new GiveStatPacket();
+            packet.photonViewId = view.ViewID;
+            packet.stat = (int)stat;
+            packet.amount = amount;
+            GameManager.Instance.networkingManager.SendRequestPacket(packet);
+        }
+    }
+
+    public void DoGiveStat(ItemStat stat, int amount)
+    {
+        if (stat == ItemStat.Health)
+        {
+            health += amount;
+        }
+        else if (stat == ItemStat.Attack)
+        {
+            // Should probably be refactored, but whatever...
+            Weapon weapon = GetComponent<Weapon>();
+            if (weapon != null)
+            {
+                weapon.attackStat += amount;
+            }
+            else
+            {
+                Debug.LogError("Cannot find weapon!");
+            }
+        }
+
+        PhotonView view = GetComponent<PhotonView>();
+        if (GameManager.Instance.networkingManager.IsDebuggingMode || (view != null && view.IsMine))
+        {
+            GameManager.Instance.gameController.uiController.UpdateHealth();
+        }
+    }
+
     void Start() {
         _isUsingAbility = false;
         _abilitiesMap = new Dictionary<string, Ability>();

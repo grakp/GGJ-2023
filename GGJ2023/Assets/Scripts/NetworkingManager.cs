@@ -100,6 +100,17 @@ public class DealDamagePacket : PacketBase
 };
 
 
+[System.Serializable]
+public class GiveStatPacket : PacketBase
+{
+    public const byte id = 7;
+    public override byte packetId { get { return id; } protected set { packetId = value; }}
+    public int photonViewId;
+    public int stat;
+    public int amount;
+};
+
+
 public class NetworkingManager : MonoBehaviour
 {
     public static string worldSeed = "";
@@ -136,6 +147,7 @@ public class NetworkingManager : MonoBehaviour
         PhotonPeer.RegisterType(typeof(InteractPacket), InteractPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
         PhotonPeer.RegisterType(typeof(ShopPurchasePacket), ShopPurchasePacket.id, PacketBase.Serialize, PacketBase.Deserialize);
         PhotonPeer.RegisterType(typeof(DealDamagePacket), DealDamagePacket.id, PacketBase.Serialize, PacketBase.Deserialize);
+        PhotonPeer.RegisterType(typeof(GiveStatPacket), GiveStatPacket.id, PacketBase.Serialize, PacketBase.Deserialize);
 
         PhotonNetwork.NetworkingClient.EventReceived += Network_OnEventReceived;
     
@@ -191,6 +203,9 @@ public class NetworkingManager : MonoBehaviour
                 break;
             case DealDamagePacket.id:
                 HandlePacket((DealDamagePacket)obj.CustomData);
+                break;
+            case GiveStatPacket.id:
+                HandlePacket((GiveStatPacket)obj.CustomData);
                 break;
             default:
                 if (dataType.IsSubclassOf(typeof(PacketBase)))
@@ -384,6 +399,40 @@ public class NetworkingManager : MonoBehaviour
         }
 
         unit.DoTakeDamage(packet.damageDealt, instigatorUnit);
+    }
+
+    public void HandlePacket(GiveStatPacket packet)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            DoPacketAction(packet);
+            SendPacket(packet, Photon.Realtime.ReceiverGroup.Others);
+        }
+        else
+        {
+            DoPacketAction(packet);
+        }
+    }
+
+    public void DoPacketAction(GiveStatPacket packet)
+    {
+        PhotonView statToGiveTo = PhotonView.Find(packet.photonViewId);
+        if (statToGiveTo == null)
+        {
+            Debug.LogError("Cannot find instigator");
+            return;
+        }
+
+        ItemStat stat = (ItemStat)packet.stat;
+
+        BaseUnit unit = statToGiveTo.GetComponent<BaseUnit>();
+        if (unit == null)
+        {
+            Debug.LogError("Unable to get unit: " + packet.GetType().Name);
+            return;
+        }
+
+        unit.DoGiveStat(stat, packet.amount);
     }
 
 

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public enum ItemStat 
 {
-    Attack,
-    Health
+    Attack = 0,
+    Health = 1
 };
 
 [System.Serializable]

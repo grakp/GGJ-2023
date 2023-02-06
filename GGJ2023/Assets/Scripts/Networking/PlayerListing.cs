@@ -15,6 +15,6 @@ public class PlayerListing : MonoBehaviour
     public void SetPlayerInfo(Player player)
     {
         this.player = player;
-        text.text = player.ActorNumber + ": " + player.NickName + " " + player.IsLocal;
+        text.text = player.ActorNumber + ": " + player.NickName;
     }
 }
