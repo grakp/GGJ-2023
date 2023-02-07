@@ -306,21 +306,21 @@ public class NetworkingManager : MonoBehaviour
         GamePlayerInfo playerInfo = GameManager.Instance.gameController.GetPlayerFromActorNumber(packet.actorNumber);
         if (playerInfo == null)
         {
-            Debug.LogError("Unable to get player: " + packet.actorNumber);
+            Debug.LogWarning("Unable to get player: " + packet.actorNumber);
             return;
         }
 
         TileInfo tileInfo = GameManager.Instance.gameController.tileManager.GetTileInfoInArraySafe(packet.locationX, packet.locationY);
         if (tileInfo == null)
         {
-            Debug.LogError("Unable to get tile info: " + packet.locationX + " " + packet.locationY);
+            Debug.LogWarning("Unable to get tile info: " + packet.locationX + " " + packet.locationY);
             return;
         }
 
         TiledGameObject tiledGameObject = tileInfo.tiledGameObject;
         if (tiledGameObject == null)
         {
-            Debug.LogError("Unable to get tiled gameobject: " + packet.locationX + " " + packet.locationY);
+            Debug.LogWarning("Unable to get tiled gameobject: " + packet.locationX + " " + packet.locationY);
             return;
         }
 
@@ -345,21 +345,21 @@ public class NetworkingManager : MonoBehaviour
         GamePlayerInfo playerInfo = GameManager.Instance.gameController.GetPlayerFromActorNumber(packet.actorNumber);
         if (playerInfo == null)
         {
-            Debug.LogError("Unable to get player: " + packet.actorNumber);
+            Debug.LogWarning("Unable to get player: " + packet.actorNumber);
             return;
         }
 
         TileInfo tileInfo = GameManager.Instance.gameController.tileManager.GetTileInfoInArraySafe(packet.locationX, packet.locationY);
         if (tileInfo == null)
         {
-            Debug.LogError("Unable to get tile info: " + packet.locationX + " " + packet.locationY);
+            Debug.LogWarning("Unable to get tile info: " + packet.locationX + " " + packet.locationY);
             return;
         }
 
         ShopTiledGameObject tiledGameObject = (ShopTiledGameObject)tileInfo.tiledGameObject;
         if (tiledGameObject == null)
         {
-            Debug.LogError("Unable to get tiled gameobject: " + packet.locationX + " " + packet.locationY);
+            Debug.LogWarning("Unable to get tiled gameobject: " + packet.locationX + " " + packet.locationY);
             return;
         }
 
@@ -373,28 +373,28 @@ public class NetworkingManager : MonoBehaviour
         PhotonView target = PhotonView.Find(packet.photonViewId);
         if (target == null)
         {
-            Debug.LogError("Cannot find photon view");
+            Debug.LogWarning("Cannot find photon view");
             return;
         }
 
         BaseUnit unit = target.GetComponent<BaseUnit>();
         if (unit == null)
         {
-            Debug.LogError("Cannot find unit");
+            Debug.LogWarning("Cannot find unit");
             return;
         }
 
         PhotonView instigator = PhotonView.Find(packet.instigatorViewId);
         if (instigator == null)
         {
-            Debug.LogError("Cannot find instigator");
+            Debug.LogWarning("Cannot find instigator");
             return;
         }
 
         BaseUnit instigatorUnit = instigator.GetComponent<BaseUnit>();
         if (instigatorUnit == null)
         {
-            Debug.LogError("Cannot find instigator unit");
+            Debug.LogWarning("Cannot find instigator unit");
             return;
         }
 
@@ -419,7 +419,7 @@ public class NetworkingManager : MonoBehaviour
         PhotonView statToGiveTo = PhotonView.Find(packet.photonViewId);
         if (statToGiveTo == null)
         {
-            Debug.LogError("Cannot find instigator");
+            Debug.LogWarning("Cannot find instigator");
             return;
         }
 
@@ -428,7 +428,7 @@ public class NetworkingManager : MonoBehaviour
         BaseUnit unit = statToGiveTo.GetComponent<BaseUnit>();
         if (unit == null)
         {
-            Debug.LogError("Unable to get unit: " + packet.GetType().Name);
+            Debug.LogWarning("Unable to get unit: " + packet.GetType().Name);
             return;
         }
 

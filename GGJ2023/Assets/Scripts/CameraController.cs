@@ -118,7 +118,7 @@ public class CameraController : MonoBehaviour
         Vector3 targetPosition = target.position + offset;
 
         Vector3 movedPosition = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
-        movedPosition.x = Mathf.Clamp(movedPosition.x, minCameraLocationX, maxCameraLocationY);
+        movedPosition.x = Mathf.Clamp(movedPosition.x, minCameraLocationX, maxCameraLocationX);
         movedPosition.y = Mathf.Clamp(movedPosition.y, minCameraLocationY, maxCameraLocationY);
 
         transform.position = movedPosition;

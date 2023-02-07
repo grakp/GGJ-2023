@@ -55,6 +55,10 @@ public class StaticResourceManager : MonoBehaviour
     public ShopPoolParams shopPoolParams;
 
 
+    public TiledGameObject rootMasterPrefab;
+    public TiledGameObject rootNormalPrefab;
+
+
     public ShopInstance CreateNewShopInstance(int numItems)
     {
         ShopInstance shopInstance = new ShopInstance();

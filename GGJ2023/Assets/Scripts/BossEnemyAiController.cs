@@ -10,6 +10,7 @@ public class BossEnemyAiController : AiControllerBase
     public Transform MAGIC_CIRCLE_OF_DARKNESS;
 
     public float speed = 1;
+    private float currentSpeed = 1;
 
     public float minSize = 20.0f;
     public float maxSize = 50.0f;
@@ -32,11 +33,22 @@ public class BossEnemyAiController : AiControllerBase
 
     public float hitboxInterval = 0.1f;
     private float currentHitboxInterval = 0;
-    public float damageDealt = 1;
+    private int damageDealt = 1;
+
+    int phase = 0;
+
+    int originalHealth;
+
+    float maxSizeToUse = 50.0f;
+    private float currentMinSize = 10.0f;
 
     void Start()
     {
+        currentSpeed = speed;
         currentSize = minSize;
+        currentMinSize = minSize;
+        originalHealth = selfUnit.health;
+        maxSizeToUse = maxSize;
     }
 
     void Update()
@@ -65,11 +77,11 @@ public class BossEnemyAiController : AiControllerBase
 
         if (isIncreasing)
         {
-            currentSize += speed * Time.deltaTime;
+            currentSize += currentSpeed * Time.deltaTime;
         }
         else
         {
-            currentSize -= speed * Time.deltaTime;
+            currentSize -= currentSpeed * Time.deltaTime;
         }
 
         MAGIC_CIRCLE_OF_DARKNESS.transform.localScale = new Vector3(currentSize, currentSize, MAGIC_CIRCLE_OF_DARKNESS.transform.localScale.z);
@@ -91,11 +103,11 @@ public class BossEnemyAiController : AiControllerBase
         eulerRotation4.z += -rotationSpeed * Time.deltaTime;
         MAGIC_CIRCLE_STARS4.transform.rotation = Quaternion.Euler(eulerRotation3);
 
-        if (isIncreasing && currentSize >= maxSize)
+        if (isIncreasing && currentSize >= maxSizeToUse)
         {
             isIncreasing = false;
         }
-        else if (!isIncreasing && currentSize <= minSize)
+        else if (!isIncreasing && currentSize <= currentMinSize)
         {
             isIncreasing = true;
         }
@@ -107,8 +119,35 @@ public class BossEnemyAiController : AiControllerBase
             currentHitboxInterval = 0;
             foreach (BaseUnit unit in magicCircle.collidedUnits)
             {
-                unit.RequestTakeDamage(1, selfUnit);
+                unit.RequestTakeDamage(damageDealt, selfUnit);
             }
+        }
+
+        int health = selfUnit.health;
+        float healthPercent = (float)health / (float)originalHealth;
+        
+        if (healthPercent < 0.75f && phase == 0)
+        {
+            currentSpeed = speed * 2.0f;
+            currentMinSize = minSize + minSize * 0.5f;
+            maxSizeToUse = maxSize + maxSize * 0.5f;
+            phase++;
+        }
+        else if (healthPercent < 0.5f && phase == 1)
+        {
+            currentSpeed = speed * 5.0f;
+            currentMinSize = minSize + minSize * 1f;
+            maxSizeToUse = maxSize + maxSize * 1f;
+            phase++;
+        }
+        else if (healthPercent < 0.25f && phase == 2)
+        {
+            damageDealt = 2;
+            currentSpeed = speed * 20.0f;
+            maxSizeToUse = maxSize + maxSize * 2f;
+            currentMinSize = minSize + minSize * 2f;
+
+            phase++;
         }
 
     }

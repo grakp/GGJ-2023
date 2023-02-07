@@ -166,7 +166,7 @@ public class BaseUnit : MonoBehaviour
             if(health <= 0) {
                 break;
             }
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
 
         // TODO (Trigger some death animations)
@@ -180,7 +180,7 @@ public class BaseUnit : MonoBehaviour
                 _isUsingAbility = false;
                 break;                
             }
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
         yield return null;
     }

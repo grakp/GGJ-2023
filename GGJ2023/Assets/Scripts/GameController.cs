@@ -14,6 +14,7 @@ public class EnemySpawnParams
 {
     public AiControllerBase enemyPrefab;
     public int numObjects = 10;
+    public int maxEnemies = 20;
     public Vector2Int size = Vector2Int.one;
 };
 
@@ -192,6 +193,7 @@ public class GameController : MonoBehaviour
         if (GameManager.Instance.networkingManager.IsDebuggingMode)
         {
             AiControllerBase enemy = Instantiate<AiControllerBase>(enemyPrefab, spawnLocation, Quaternion.identity);
+            AddEnemy(enemy);
         }
         else if (PhotonNetwork.IsMasterClient)
         {
@@ -211,6 +213,17 @@ public class GameController : MonoBehaviour
         {
             enemies.Remove(enemy);
         }
+    }
+
+    public int GetNumEnemies()
+    {
+        return enemies.Count;
+    }
+
+    public int GetMaxEnemies()
+    {
+        // Hacky - just get the first one :P
+        return enemySpawnParams[0].maxEnemies;
     }
 
     private void GenerateEnemies()
