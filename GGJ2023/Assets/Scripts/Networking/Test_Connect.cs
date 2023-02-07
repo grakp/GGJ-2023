@@ -4,12 +4,15 @@ using UnityEngine;
 
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class Test_Connect : MonoBehaviourPunCallbacks
 {
 
+    public Button createRoomButton;
     void Start()
     {
+        createRoomButton.interactable = false;
         Initialize();
     }
 
@@ -39,8 +42,8 @@ public class Test_Connect : MonoBehaviourPunCallbacks
         if (!PhotonNetwork.InLobby)
         {
             PhotonNetwork.JoinLobby();
+            createRoomButton.interactable = true;
         }
-
 
     }
 

@@ -89,7 +89,7 @@ public class BaseUnit : MonoBehaviour
             // Update player health if it has been hit
             if (GameManager.Instance.networkingManager.IsDebuggingMode || (playerController.photonView != null && playerController.photonView.IsMine))
             {
-                GameManager.Instance.gameController.uiController.UpdateHealth();
+                GameManager.Instance.gameController.uiController.UpdatePlayerStats();
             }
         }
 
@@ -145,7 +145,7 @@ public class BaseUnit : MonoBehaviour
         PhotonView view = GetComponent<PhotonView>();
         if (GameManager.Instance.networkingManager.IsDebuggingMode || (view != null && view.IsMine))
         {
-            GameManager.Instance.gameController.uiController.UpdateHealth();
+            GameManager.Instance.gameController.uiController.UpdatePlayerStats();
         }
     }
 

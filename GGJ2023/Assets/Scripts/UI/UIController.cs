@@ -9,6 +9,8 @@ public class UIController : MonoBehaviour
     public ShopkeeperUIController shopkeeperUIController;
     
     public TMP_Text playerHealthText;
+    public TMP_Text playerAttackText;
+
     public TMP_Text woodResourceText;
     public TMP_Text waterResourceText;
     public TMP_Text stoneResourceText;
@@ -24,6 +26,7 @@ public class UIController : MonoBehaviour
     private BaseUnit cachedTarget = null;
 
     private bool isShowingTargetHealth = false;
+    private Weapon weapon;
 
     // Start is called before the first frame update
     void Start()
@@ -45,14 +48,16 @@ public class UIController : MonoBehaviour
     {
         player = GameManager.Instance.gameController.GetMyPlayer();
         playerBaseUnit = player.GetComponent<BaseUnit>();
-        SetPlayerHealth(playerBaseUnit.health);
+        weapon = player.GetComponent<Weapon>();
+        UpdatePlayerStats();
 
         UpdateResourceText();
     }
 
-    public void UpdateHealth()
+    public void UpdatePlayerStats()
     {
         SetPlayerHealth(playerBaseUnit.health);
+        SetPlayerAtack(weapon.attackStat);
     }
 
     public void UpdateResourceText()
@@ -72,9 +77,14 @@ public class UIController : MonoBehaviour
         Initialize();
     }
 
-    public void SetPlayerHealth(int health)
+    private void SetPlayerHealth(int health)
     {
         playerHealthText.text = "HP: " + health;
+    }
+
+    private void SetPlayerAtack(int attack)
+    {
+        playerAttackText.text = "+ " + attack + " ATK";
     }
 
     public void ShowTargetHealth(BaseUnit target)
