@@ -58,6 +58,8 @@ public class StaticResourceManager : MonoBehaviour
     public TiledGameObject rootMasterPrefab;
     public TiledGameObject rootNormalPrefab;
 
+    public List<int> rootHealths;
+
 
     public ShopInstance CreateNewShopInstance(int numItems)
     {

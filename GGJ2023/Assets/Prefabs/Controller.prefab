@@ -50,11 +50,12 @@ MonoBehaviour:
   uiController: {fileID: 0}
   tileManager: {fileID: 19427948}
   mapGenerator: {fileID: 19427947}
-  debug_DoFixedSpawnLocation: 1
+  debug_DoFixedSpawnLocation: 0
   debug_FixedSpawnLocation: {x: -8, y: 0, z: 0}
   enemySpawnParams:
   - enemyPrefab: {fileID: 3752945402656279126, guid: 43f6e880a516541938f6534485ee9c2d, type: 3}
-    numObjects: 20
+    numObjects: 15
+    maxEnemies: 50
     size: {x: 1, y: 2}
 --- !u!114 &19427947
 MonoBehaviour:
@@ -119,20 +120,20 @@ MonoBehaviour:
   alternativeGrassTileChance: 0.1
   spawnParams:
   - tiledObjectPrefab: {fileID: 240168030, guid: 7993a6720c219cd42b2829404834b581, type: 3}
-    numObjects: 10
+    numObjects: 25
   - tiledObjectPrefab: {fileID: -2851313591888923521, guid: 14433dab5020e844296c5105642ffd9e, type: 3}
-    numObjects: 45
+    numObjects: 50
   - tiledObjectPrefab: {fileID: 5631729447146398238, guid: fe7798b94bfff1143a3b8254c401767b, type: 3}
-    numObjects: 45
-  - tiledObjectPrefab: {fileID: 8153999305673257778, guid: eff8b0d1eac94084dbf422271a10a2f2, type: 3}
-    numObjects: 30
+    numObjects: 100
+  - tiledObjectPrefab: {fileID: 1515742572865094103, guid: eff8b0d1eac94084dbf422271a10a2f2, type: 3}
+    numObjects: 25
   - tiledObjectPrefab: {fileID: 5853396129714741781, guid: 0c5207e2c8023864c9e89bcc6fdb3fa9, type: 3}
-    numObjects: 30
+    numObjects: 25
   - tiledObjectPrefab: {fileID: 5483216928425226637, guid: d213e59984808c5469eb8a0ede11ed9a, type: 3}
-    numObjects: 30
+    numObjects: 50
   - tiledObjectPrefab: {fileID: 5483216928425226637, guid: ad87f962e5630ac478891743dcd57451, type: 3}
-    numObjects: 30
-  - tiledObjectPrefab: {fileID: 8358004387505399470, guid: e970f093935026343bbf8caf4990a4cf, type: 3}
+    numObjects: 150
+  - tiledObjectPrefab: {fileID: 3341790186563456456, guid: e970f093935026343bbf8caf4990a4cf, type: 3}
     numObjects: 20
   emptyDistanceFromCenter: 5
   waterTilePrefab: {fileID: 7600776276201325487, guid: 93eaaed0fc5be364cb5e65089f3bf1de, type: 3}
@@ -140,3 +141,4 @@ MonoBehaviour:
   waterWalkIterations: 2
   waterWalkLength: 4
   waterWalkStartRandomlyEachIteration: 1
+  finishedWorldGeneration: 0

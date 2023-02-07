@@ -81,7 +81,7 @@ MonoBehaviour:
     - {fileID: 166254889, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
     possibleItemTypes:
     - minCost: 5
-      maxCost: 60
+      maxCost: 100
       possibleSprites:
       - {fileID: -14187780, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
       - {fileID: 656979245, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
@@ -96,9 +96,9 @@ MonoBehaviour:
       - {fileID: 25286821, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
       stat: 0
       baseStatPerCost: 1
-      statVariance: 30
+      statVariance: 35
     - minCost: 5
-      maxCost: 125
+      maxCost: 100
       possibleSprites:
       - {fileID: 1368492110, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
       - {fileID: 668125808, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
@@ -106,9 +106,10 @@ MonoBehaviour:
       - {fileID: 828535536, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
       stat: 1
       baseStatPerCost: 2
-      statVariance: 75
+      statVariance: 35
   rootMasterPrefab: {fileID: 3341790186563456456, guid: e970f093935026343bbf8caf4990a4cf, type: 3}
   rootNormalPrefab: {fileID: 3558550971246752935, guid: ba0e609104315a64db9465a3dffc202f, type: 3}
+  rootHealths: 2c0100004b000000320000002300000014000000
 --- !u!114 &7186859170484931812
 MonoBehaviour:
   m_ObjectHideFlags: 0

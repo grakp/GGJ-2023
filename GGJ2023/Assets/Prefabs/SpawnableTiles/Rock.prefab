@@ -276,7 +276,7 @@ MonoBehaviour:
   tilemap: {fileID: 0}
   resourceType: 2
   amountToGive: 1
-  totalAmount: 3
+  totalAmount: 5
   hasLimit: 1
 --- !u!1 &7170338977357856863
 GameObject:

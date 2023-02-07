@@ -369,9 +369,10 @@ MonoBehaviour:
   aggroStateController: {fileID: 0}
   combatStateController: {fileID: 0}
   rotationWidthDegrees: 0
-  nextSpawnTimeSec: 2
+  nextSpawnTimeSec: 3
   builder: {fileID: 7042611277419564237}
   tiledPhotonView: {fileID: 3341790186563456456}
+  baseUnit: {fileID: 4469510001259379059}
   spawnParams:
     enemyPrefab: {fileID: 3752945402656279126, guid: 43f6e880a516541938f6534485ee9c2d, type: 3}
     numObjects: 5
@@ -380,6 +381,7 @@ MonoBehaviour:
   enemySpawnInterval: 3
   isMasterTile: 1
   randomSpawnVariance: 5
+  maxSpawnedLevels: 4
 --- !u!114 &4469510001259379059
 MonoBehaviour:
   m_ObjectHideFlags: 0

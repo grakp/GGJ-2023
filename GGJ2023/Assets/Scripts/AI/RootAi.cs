@@ -11,6 +11,7 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
     public float nextSpawnTimeSec=10;
     public RootAiBuilder builder;
     public TiledPhotonView tiledPhotonView;
+    public BaseUnit baseUnit;
 
     private Vector2 _dirToMove;
     private Vector2 _leftVectorBoundary;
@@ -29,9 +30,14 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
     public bool isMasterTile = false;
 
     public float randomSpawnVariance = 5.0f;
+
+    public float maxSpawnedLevels = 4;
+
     private float currentRandomSpawnInterval;
 
     bool hasInitialized = false;
+
+    private int level = 0;
 
     protected void Initialize(Vector2 dirToMove, float rotationWidth, TileInfo tile) {
 
@@ -45,6 +51,11 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
         transform.SetParent(GameManager.Instance.gameController.spawnedObjectParent);
         _tileManager = GameManager.Instance.gameController.tileManager;
         view = GetComponent<PhotonView>();
+
+        if (isMasterTile)
+        {
+            SetLevel(0);
+        }
 
         currentRandomSpawnInterval = enemySpawnInterval + Random.Range(0.0f, randomSpawnVariance);
 
@@ -63,7 +74,10 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
 
         if (PhotonNetwork.IsMasterClient || GameManager.Instance.networkingManager.IsDebuggingMode)
         {
-            StartCoroutine(SpawnNextChain());
+            if (level < maxSpawnedLevels)
+            {
+                StartCoroutine(SpawnNextChain());
+            }
         }
     }
 
@@ -142,13 +156,12 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
             }
             else
             {
-                yield break;
+                yield return null;
             }
         }
 
-
         TileInfo nextTile = _tileManager.GetTileInfoInArraySafe(nextPositionToSpawn.x, nextPositionToSpawn.y);
-        builder.Initialize(_dirToMove, rotationWidthDegrees, nextTile, false);
+        builder.Initialize(_dirToMove, rotationWidthDegrees, nextTile, false, level);
 
         yield return null;
 
@@ -283,7 +296,23 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
         int tileX = (int)customData[0];
         int tileY = (int)customData[1];
 
+        if (customData.Length >= 3)
+        {
+            int newLevel = (int)customData[2];
+            SetLevel(newLevel);
+        }
+
         InitializeRemote(tileX, tileY);
+    }
+
+    public void SetLevel(int newLevel)
+    {
+        level = newLevel;
+
+        if (level < GameManager.Instance.resourceManager.rootHealths.Count)
+        {
+            baseUnit.health = GameManager.Instance.resourceManager.rootHealths[level];
+        }
     }
 
 }

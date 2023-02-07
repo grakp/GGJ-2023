@@ -356,7 +356,7 @@ public class TileManager : MonoBehaviour
         finishedWorldGeneration = true;
     }
 
-    public TiledGameObject PlaceTile(TiledGameObject obj, TileInfo tile) {
+    public TiledGameObject PlaceTile(TiledGameObject obj, TileInfo tile, int optionalParam = -1) {
         if(!IsSpawnableLocation(tile.positionInArray, new Vector2Int(1, 1))) {
             return null;
         }
@@ -376,7 +376,7 @@ public class TileManager : MonoBehaviour
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                object[] instantiationParams = new object[]{tile.positionInArray.x, tile.positionInArray.y};
+                object[] instantiationParams = new object[]{tile.positionInArray.x, tile.positionInArray.y, optionalParam};
                 GameObject newObjectObj = NetworkingSingleton.NetworkInstantiate(obj.gameObject, instantiatePosition, Quaternion.identity, instantiationParams);
                 if (newObjectObj == null)
                 {
