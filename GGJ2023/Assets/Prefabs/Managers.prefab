@@ -49,7 +49,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceManager: {fileID: 1019820380}
   networkingManager: {fileID: 7186859170484931812}
-  connection: {fileID: 0}
 --- !u!114 &1019820380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +107,8 @@ MonoBehaviour:
       stat: 1
       baseStatPerCost: 2
       statVariance: 75
+  rootMasterPrefab: {fileID: 3341790186563456456, guid: e970f093935026343bbf8caf4990a4cf, type: 3}
+  rootNormalPrefab: {fileID: 3558550971246752935, guid: ba0e609104315a64db9465a3dffc202f, type: 3}
 --- !u!114 &7186859170484931812
 MonoBehaviour:
   m_ObjectHideFlags: 0

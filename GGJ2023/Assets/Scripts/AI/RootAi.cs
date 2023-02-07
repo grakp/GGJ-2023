@@ -60,11 +60,11 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
 
          GameManager.Instance.gameController.tileManager.SetTileInUse(tiledPhotonView, tiledPhotonView.originTile);
 
-        if (view.IsMine || GameManager.Instance.networkingManager.IsDebuggingMode)
+
+        if (PhotonNetwork.IsMasterClient || GameManager.Instance.networkingManager.IsDebuggingMode)
         {
             StartCoroutine(SpawnNextChain());
         }
-
     }
 
     // Start is called before the first frame update
@@ -92,7 +92,7 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
             return;
         }
 
-        if (view.IsMine || GameManager.Instance.networkingManager.IsDebuggingMode)
+        if (PhotonNetwork.IsMasterClient || GameManager.Instance.networkingManager.IsDebuggingMode)
         {
             if (isMasterTile)
             {
@@ -140,11 +140,16 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
                 nextPositionToSpawn = spawnedLocation;
                 break;
             }
-           
-            yield return null;
+            else
+            {
+                yield break;
+            }
         }
+
+
         TileInfo nextTile = _tileManager.GetTileInfoInArraySafe(nextPositionToSpawn.x, nextPositionToSpawn.y);
-        builder.Initialize(_dirToMove, rotationWidthDegrees, nextTile);
+        builder.Initialize(_dirToMove, rotationWidthDegrees, nextTile, false);
+
         yield return null;
 
         if (isMasterTile)
@@ -167,7 +172,10 @@ public class RootAi : AiController // MonoBehaviourPun, IPunInstantiateMagicCall
             if(rand == 0) {
                 // upleft
                 if(_tileManager.IsSpawnableLocation(new Vector2Int(-1, 1) + curPositionInArray, new Vector2Int(1, 1)))
+                {
                     return new Vector2Int(-1, 1) + curPositionInArray;
+                }
+                   
             } else if(rand == 1) {
                 // upright
                 if(_tileManager.IsSpawnableLocation(new Vector2Int(1, 1) + curPositionInArray, new Vector2Int(1, 1)))

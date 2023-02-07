@@ -378,6 +378,12 @@ public class TileManager : MonoBehaviour
             {
                 object[] instantiationParams = new object[]{tile.positionInArray.x, tile.positionInArray.y};
                 GameObject newObjectObj = NetworkingSingleton.NetworkInstantiate(obj.gameObject, instantiatePosition, Quaternion.identity, instantiationParams);
+                if (newObjectObj == null)
+                {
+
+                    Debug.LogError("Failed to instnatiate");
+                    GameObject newObjectObj2 = NetworkingSingleton.NetworkInstantiate(obj.gameObject, instantiatePosition, Quaternion.identity, instantiationParams);
+                }
                 return null;
             }
         }
