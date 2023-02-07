@@ -95,8 +95,8 @@ MonoBehaviour:
       - {fileID: 109216756, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
       - {fileID: 25286821, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
       stat: 0
-      baseStatPerCost: 1
-      statVariance: 35
+      baseStatPerCost: 0.5
+      statVariance: 20
     - minCost: 5
       maxCost: 100
       possibleSprites:
@@ -106,7 +106,7 @@ MonoBehaviour:
       - {fileID: 828535536, guid: dcf00d80ebd1c2042bb6360ea3446164, type: 3}
       stat: 1
       baseStatPerCost: 2
-      statVariance: 35
+      statVariance: 60
   rootMasterPrefab: {fileID: 3341790186563456456, guid: e970f093935026343bbf8caf4990a4cf, type: 3}
   rootNormalPrefab: {fileID: 3558550971246752935, guid: ba0e609104315a64db9465a3dffc202f, type: 3}
   rootHealths: 2c0100004b000000320000002300000014000000

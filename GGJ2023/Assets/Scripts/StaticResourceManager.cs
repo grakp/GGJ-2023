@@ -16,7 +16,7 @@ public class ShopPoolItemParams
     public List<Sprite> possibleSprites;
     public ItemStat stat;
 
-    public int baseStatPerCost = 1;
+    public float baseStatPerCost = 1;
     public int statVariance = 20;
 };
 
@@ -96,7 +96,10 @@ public class StaticResourceManager : MonoBehaviour
                 }
             }
 
-            int magnifier = Mathf.Max(totalCost * itemParams.baseStatPerCost + NetworkingManager.RandomRangeUsingWorldSeed(-itemParams.statVariance, itemParams.statVariance), 1);
+            int baseCost = (int)(totalCost * itemParams.baseStatPerCost);
+            int variance = (int)(NetworkingManager.RandomRangeUsingWorldSeed(-itemParams.statVariance, itemParams.statVariance) * itemParams.baseStatPerCost);
+
+            int magnifier = Mathf.Max(baseCost + variance, 1);
             newItem.magnifier = magnifier;
             newItem.stat = itemParams.stat;
 

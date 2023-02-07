@@ -128,23 +128,34 @@ public class BossEnemyAiController : AiControllerBase
         
         if (healthPercent < 0.75f && phase == 0)
         {
+            damageDealt = 2;
             currentSpeed = speed * 2.0f;
-            currentMinSize = minSize + minSize * 0.5f;
+            currentMinSize = minSize + minSize * 1f;
             maxSizeToUse = maxSize + maxSize * 0.5f;
             phase++;
         }
         else if (healthPercent < 0.5f && phase == 1)
         {
+            damageDealt = 3;
             currentSpeed = speed * 5.0f;
-            currentMinSize = minSize + minSize * 1f;
+            currentMinSize = minSize + minSize * 1.5f;
             maxSizeToUse = maxSize + maxSize * 1f;
             phase++;
         }
         else if (healthPercent < 0.25f && phase == 2)
         {
-            damageDealt = 2;
+            damageDealt = 4;
             currentSpeed = speed * 20.0f;
-            maxSizeToUse = maxSize + maxSize * 2f;
+            maxSizeToUse = maxSize + maxSize * 3f;
+            currentMinSize = minSize + minSize * 1.5f;
+
+            phase++;
+        }
+        else if (healthPercent < 0.10f && phase == 3)
+        {
+            damageDealt = 5;
+            currentSpeed = speed * 25.0f;
+            maxSizeToUse = maxSize + maxSize * 5f;
             currentMinSize = minSize + minSize * 2f;
 
             phase++;
